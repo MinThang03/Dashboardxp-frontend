@@ -48,28 +48,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-blue-200/30 to-transparent rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-indigo-200/30 to-transparent rounded-full blur-3xl animate-pulse delay-1000" />
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl animate-pulse delay-500" />
-      </div>
-
-      {/* Login Card */}
-      <Card className="w-full max-w-md bg-white/90 border-gray-200 shadow-2xl backdrop-blur-sm relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      {/* Login Card - nền trắng, viền theo bảng màu */}
+      <Card className="w-full max-w-md bg-card border-border shadow-lg relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="p-8 space-y-6">
-          {/* Header */}
+          {/* Header - xanh dương chính quyền */}
           <div className="text-center space-y-2 animate-in fade-in slide-in-from-top duration-700 delay-100">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-4 shadow-lg animate-in zoom-in duration-500 delay-200">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <span className="text-transparent bg-gradient-to-br from-blue-600 to-indigo-600 bg-clip-text text-2xl font-bold">SC</span>
-              </div>
+            <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 shadow-md animate-in zoom-in duration-500 delay-200">
+              <span className="text-primary-foreground text-2xl font-bold">SC</span>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent animate-in fade-in duration-700 delay-300">
+            <h1 className="text-3xl font-bold text-primary animate-in fade-in duration-700 delay-300">
               Smart Commune
             </h1>
-            <p className="text-gray-600 text-sm animate-in fade-in duration-700 delay-400">
+            <p className="text-muted-foreground text-sm animate-in fade-in duration-700 delay-400">
               Hệ thống Bảng điều khiển & Trợ lý AI cho UBND xã/phường
             </p>
           </div>
@@ -77,14 +68,14 @@ export default function LoginPage() {
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-4 animate-in fade-in slide-in-from-bottom duration-700 delay-500">
             {error && (
-              <div className="flex gap-2 p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200 animate-shake">
+              <div className="flex gap-2 p-3 bg-status-danger/10 text-status-danger rounded-lg text-sm border border-status-danger/30 animate-shake">
                 <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-foreground">
                 Email
               </label>
               <Input
@@ -92,13 +83,13 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                className="bg-input border-border text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-foreground">
                 Mật khẩu
               </label>
               <Input
@@ -106,19 +97,19 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                className="bg-input border-border text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-foreground">
                 Vai trò
               </label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value as UserRole)}
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition-all"
+                className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="admin">Quản trị viên</option>
                 <option value="leader">Lãnh đạo</option>
@@ -130,7 +121,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
@@ -150,7 +141,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">
+                <span className="bg-card px-2 text-muted-foreground">
                   Tài khoản demo
                 </span>
               </div>
@@ -163,7 +154,7 @@ export default function LoginPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => handleQuickLogin(acc)}
-                  className={`text-xs border-gray-300 hover:bg-blue-50 hover:border-blue-500 hover:scale-105 transition-all animate-in fade-in duration-500 delay-${800 + index * 100}`}
+                  className="text-xs border-border hover:bg-primary/10 hover:border-primary transition-all"
                 >
                   <span className="truncate">{acc.name}</span>
                 </Button>
@@ -172,7 +163,7 @@ export default function LoginPage() {
           </div>
 
           {/* Footer */}
-          <div className="pt-4 border-t border-gray-200 text-center text-xs text-gray-500 animate-in fade-in duration-700 delay-1000">
+          <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground animate-in fade-in duration-700 delay-1000">
             <p>© 2024 Smart Commune Dashboard</p>
             <p className="mt-1">Hệ thống quản lý xã/phường thông minh</p>
           </div>

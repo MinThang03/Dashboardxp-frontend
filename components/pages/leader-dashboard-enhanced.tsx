@@ -55,7 +55,7 @@ export default function LeaderDashboard() {
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold tracking-tight text-primary">
             Bảng Điều Khiển Lãnh Đạo
           </h1>
           <p className="text-muted-foreground mt-1">Theo dõi KPI các phòng ban và dự án</p>

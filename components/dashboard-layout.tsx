@@ -212,13 +212,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border transition-transform duration-300 z-40 flex flex-col',
+          'fixed left-0 top-0 h-full bg-sidebar border-r-2 border-sidebar-border transition-transform duration-300 z-40 flex flex-col',
           sidebarOpen ? 'w-64' : 'w-20',
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-sidebar-border flex items-center justify-between shrink-0">
+        <div className="h-16 px-4 border-b-2 border-sidebar-border flex items-center justify-between shrink-0">
           {sidebarOpen && (
             <div className="font-bold text-lg text-sidebar-primary flex items-center gap-2">
               <Home className="w-6 h-6" />
@@ -247,10 +247,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
                 <button
                   className={cn(
-                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                    'w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all',
                     isActive
-                      ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-lg'
-                      : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                      ? 'bg-white border-l-4 border-primary text-primary'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground'
                   )}
                   title={!sidebarOpen ? item.label : undefined}
                 >
@@ -263,31 +263,42 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* User Profile */}
-        <div className="p-3 border-t border-sidebar-border space-y-2 shrink-0">
-          {sidebarOpen && (
-            <div className="text-xs text-sidebar-foreground px-2 mb-2">
-              <div className="font-semibold truncate">{user.name}</div>
-              <div className="text-sidebar-foreground/60 capitalize truncate">
-                {user.role === 'admin'
-                  ? 'Quản trị viên'
-                  : user.role === 'leader'
-                    ? 'Lãnh đạo'
-                    : user.role === 'officer'
-                      ? 'Cán bộ'
-                      : 'Công dân'}
-              </div>
+        <div className="p-3 border-t-2 border-sidebar-border shrink-0">
+          <div className={cn('flex items-center gap-2', sidebarOpen ? 'justify-between' : 'justify-center')}>
+            <div className={cn('flex items-center gap-2 min-w-0', sidebarOpen ? '' : 'justify-center')}>
+              <div className="text-2xl leading-none">{user.avatar}</div>
+              {sidebarOpen && (
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold text-sidebar-foreground truncate">
+                    {user.name}
+                  </div>
+                  <div className="text-[11px] text-sidebar-foreground/70 capitalize truncate">
+                    {user.role === 'admin'
+                      ? 'Quản trị viên'
+                      : user.role === 'leader'
+                        ? 'Lãnh đạo'
+                        : user.role === 'officer'
+                          ? 'Cán bộ'
+                          : 'Công dân'}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-          <Button
-            variant="destructive"
-            size="sm"
-            className="w-full justify-center"
-            onClick={handleLogout}
-            title={!sidebarOpen ? 'Đăng xuất' : undefined}
-          >
-            <LogOut className="w-4 h-4" />
-            {sidebarOpen && <span className="ml-2">Đăng xuất</span>}
-          </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              title="Đăng xuất"
+              className={cn(
+                'h-9 w-9 p-0',
+                'text-sidebar-foreground/70 hover:text-status-danger',
+                'hover:bg-white/60'
+              )}
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </aside>
 
@@ -298,8 +309,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'
         )}
       >
-        {/* Top Bar */}
-        <header className="bg-card border-b border-border px-4 lg:px-6 py-3 lg:py-4 flex items-center justify-between sticky top-0 z-30 shrink-0">
+        {/* Top Bar - nền trắng, viền/dải rõ hơn theo palette */}
+        <header className="bg-card h-16 px-4 lg:px-6 flex items-center justify-between sticky top-0 z-30 shrink-0 border-b-2 border-primary">
           <div className="flex-1 flex items-center gap-4">
             {/* Mobile Menu Button */}
             <Button
@@ -337,7 +348,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         {/* Page Content */}
         <main className="flex-1 overflow-auto bg-background">
-          <div className="p-4 lg:p-6">{children}</div>
+          <div className="pt-10 px-4 lg:px-6 pb-4 lg:pb-6">{children}</div>
         </main>
       </div>
     </div>
