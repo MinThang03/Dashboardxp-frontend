@@ -3,7 +3,7 @@
 import { useAuth } from '@/lib/auth-context';
 import { DashboardLayout } from '@/components/dashboard-layout';
 import { redirect } from 'next/navigation';
-import { LeaderDashboard } from '@/components/pages/leader-dashboard';
+import LeaderDashboard from '@/components/pages/leader-dashboard-enhanced';
 import { OfficerDashboard } from '@/components/pages/officer-dashboard';
 import { CitizenDashboard } from '@/components/pages/citizen-dashboard';
 import { AdminDashboard } from '@/components/pages/admin-dashboard';
