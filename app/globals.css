@@ -3,83 +3,101 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Bảng màu hành chính công vụ: Xanh dương chính quyền, Xanh lá (môi trường), Cam/Vàng (cảnh báo), Đỏ (rủi ro), Xám/Trắng (nền) - dễ nhìn */
 :root {
-  --background: oklch(0.98 0.01 0);
-  --foreground: oklch(0.15 0.02 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 0);
-  --primary: oklch(0.55 0.12 259);
-  --primary-foreground: oklch(0.98 0.01 0);
-  --secondary: oklch(0.92 0.01 259);
-  --secondary-foreground: oklch(0.15 0.02 0);
-  --muted: oklch(0.94 0.01 0);
-  --muted-foreground: oklch(0.45 0.02 0);
-  --accent: oklch(0.55 0.12 259);
-  --accent-foreground: oklch(0.98 0.01 0);
-  --destructive: oklch(0.55 0.15 25);
-  --destructive-foreground: oklch(0.98 0.01 0);
-  --border: oklch(0.88 0.01 0);
-  --input: oklch(0.96 0.01 0);
-  --ring: oklch(0.55 0.12 259);
-  --chart-1: oklch(0.55 0.12 259);
-  --chart-2: oklch(0.65 0.1 150);
-  --chart-3: oklch(0.6 0.12 30);
-  --chart-4: oklch(0.7 0.08 120);
-  --chart-5: oklch(0.5 0.15 280);
+  /* Bảng màu HEX theo palette mới:
+     - Đậm 1: #222831
+     - Đậm 2: #393E46
+     - Teal:  #00ADB5
+     - Nền nhạt: #EEEEEE
+  */
+  /* Nền trang tổng thể */
+  --background: #EEEEEE;
+  --foreground: #222831;
+  --card: #FFFFFF;
+  --card-foreground: #222831;
+  --popover: #FFFFFF;
+  --popover-foreground: #222831;
+  /* Teal - màu chủ đạo */
+  --primary: #00ADB5;
+  --primary-foreground: #FFFFFF;
+  --secondary: #393E46;
+  --secondary-foreground: #EEEEEE;
+  --muted: #E0E0E0;
+  --muted-foreground: #6B7280;
+  --accent: #00ADB5;
+  --accent-foreground: #FFFFFF;
+  /* Đỏ - Quá hạn nghiêm trọng, vi phạm */
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --border: #D1D5DB;
+  --input: #E5E7EB;
+  --ring: #00ADB5;
+  --chart-1: #00ADB5;
+  /* Xanh lá môi trường - Chỉ số môi trường */
+  --chart-2: #16A34A;
+  /* Cam/Vàng - KPI sắp quá hạn, điểm nóng */
+  --chart-3: #F97316;
+  --chart-4: #DC2626;
+  --chart-5: #1D242B;
   --radius: 0.5rem;
-  --sidebar: oklch(0.97 0.01 259);
-  --sidebar-foreground: oklch(0.15 0.02 0);
-  --sidebar-primary: oklch(0.55 0.12 259);
-  --sidebar-primary-foreground: oklch(0.98 0.01 0);
-  --sidebar-accent: oklch(0.92 0.01 259);
-  --sidebar-accent-foreground: oklch(0.15 0.02 0);
-  --sidebar-border: oklch(0.88 0.01 0);
-  --sidebar-ring: oklch(0.55 0.12 259);
-  --status-success: oklch(0.5 0.15 150);
-  --status-warning: oklch(0.6 0.2 60);
-  --status-danger: oklch(0.55 0.15 25);
-  --status-info: oklch(0.55 0.12 259);
+  /* Sidebar - nhạt hơn một chút theo palette */
+  --sidebar: #393E46;
+  --sidebar-foreground: #EEEEEE;
+  --sidebar-primary: #00ADB5;
+  --sidebar-primary-foreground: #222831;
+  --sidebar-accent: #222831;
+  --sidebar-accent-foreground: #EEEEEE;
+  --sidebar-border: #00ADB5;
+  --sidebar-ring: #00ADB5;
+  /* Banner & Footer */
+  --banner: #D6E6F2;
+  --footer-bg: #222831;
+  /* Semantic: Xanh lá, Cam/Vàng, Đỏ, Info (xanh dương) */
+  --status-success: #16A34A;
+  --status-warning: #F97316;
+  --status-danger: #DC2626;
+  --status-info: #00ADB5;
 }
 
 .dark {
-  --background: oklch(0.98 0.01 0);
-  --foreground: oklch(0.15 0.02 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 0);
-  --primary: oklch(0.55 0.12 259);
+  /* Xám/Trắng - Nền dark */
+  --background: oklch(0.16 0.02 0);
+  --foreground: oklch(0.95 0.01 0);
+  --card: oklch(0.2 0.02 0);
+  --card-foreground: oklch(0.95 0.01 0);
+  --popover: oklch(0.2 0.02 0);
+  --popover-foreground: oklch(0.95 0.01 0);
+  --primary: oklch(0.55 0.14 255);
   --primary-foreground: oklch(0.98 0.01 0);
-  --secondary: oklch(0.92 0.01 259);
-  --secondary-foreground: oklch(0.15 0.02 0);
-  --muted: oklch(0.94 0.01 0);
-  --muted-foreground: oklch(0.45 0.02 0);
-  --accent: oklch(0.55 0.12 259);
+  --secondary: oklch(0.25 0.02 0);
+  --secondary-foreground: oklch(0.95 0.01 0);
+  --muted: oklch(0.28 0.02 0);
+  --muted-foreground: oklch(0.65 0.02 0);
+  --accent: oklch(0.55 0.14 255);
   --accent-foreground: oklch(0.98 0.01 0);
-  --destructive: oklch(0.55 0.15 25);
+  --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.98 0.01 0);
-  --border: oklch(0.88 0.01 0);
-  --input: oklch(0.96 0.01 0);
-  --ring: oklch(0.55 0.12 259);
-  --chart-1: oklch(0.55 0.12 259);
-  --chart-2: oklch(0.65 0.1 150);
-  --chart-3: oklch(0.6 0.12 30);
-  --chart-4: oklch(0.7 0.08 120);
-  --chart-5: oklch(0.5 0.15 280);
-  --sidebar: oklch(0.97 0.01 259);
-  --sidebar-foreground: oklch(0.15 0.02 0);
-  --sidebar-primary: oklch(0.55 0.12 259);
+  --border: oklch(0.32 0.02 0);
+  --input: oklch(0.25 0.02 0);
+  --ring: oklch(0.55 0.14 255);
+  --chart-1: oklch(0.55 0.14 255);
+  --chart-2: oklch(0.52 0.16 145);
+  --chart-3: oklch(0.72 0.16 75);
+  --chart-4: oklch(0.55 0.2 25);
+  --chart-5: oklch(0.5 0.14 255);
+  --sidebar: oklch(0.22 0.06 255);
+  --sidebar-foreground: oklch(0.95 0.01 0);
+  --sidebar-primary: oklch(0.5 0.14 255);
   --sidebar-primary-foreground: oklch(0.98 0.01 0);
-  --sidebar-accent: oklch(0.92 0.01 259);
-  --sidebar-accent-foreground: oklch(0.15 0.02 0);
-  --sidebar-border: oklch(0.88 0.01 0);
-  --sidebar-ring: oklch(0.55 0.12 259);
-  --status-success: oklch(0.5 0.15 150);
-  --status-warning: oklch(0.6 0.2 60);
-  --status-danger: oklch(0.55 0.15 25);
-  --status-info: oklch(0.55 0.12 259);
+  --sidebar-accent: oklch(0.32 0.08 255);
+  --sidebar-accent-foreground: oklch(0.95 0.01 0);
+  --sidebar-border: oklch(0.38 0.06 255);
+  --sidebar-ring: oklch(0.5 0.14 255);
+  --status-success: oklch(0.52 0.16 145);
+  --status-warning: oklch(0.72 0.16 75);
+  --status-danger: oklch(0.52 0.2 25);
+  --status-info: oklch(0.45 0.14 255);
 }
 
 @theme inline {
@@ -121,6 +139,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
 }
 
 @layer base {

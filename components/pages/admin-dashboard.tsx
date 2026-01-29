@@ -110,8 +110,8 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div>
+      {/* Page Header - banner tổng quan dùng xanh nhạt */}
+      <div className="rounded-lg bg-[var(--banner)] px-4 py-3">
         <h1 className="text-3xl font-bold text-foreground">
           Quản trị hệ thống
         </h1>

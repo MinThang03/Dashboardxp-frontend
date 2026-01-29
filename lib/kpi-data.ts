@@ -103,6 +103,105 @@ export const crimeStatisticsKPI = {
   ],
   priority: 3,
   department: 'Công an xã',
+  // Thống kê theo địa bàn thôn/xóm để lãnh đạo xem nhanh
+  byVillage: [
+    {
+      name: 'Thôn A',
+      theft: 5,
+      robbery: 1,
+      drugs: 1,
+      gambling: 2,
+      civilDisputes: 3,
+      cases: [
+        {
+          id: 'TC-A-01',
+          type: 'Trộm cắp xe máy',
+          date: '2024-01-05',
+          status: 'Đã xử lý',
+          location: 'Ngõ 3, Thôn A',
+          description: 'Mất 1 xe máy trước cửa nhà dân vào ban đêm',
+        },
+        {
+          id: 'TC-A-02',
+          type: 'Trộm cắp tài sản công cộng',
+          date: '2024-01-12',
+          status: 'Đang xác minh',
+          location: 'Nhà văn hoá thôn',
+          description: 'Mất loa kéo phục vụ sinh hoạt cộng đồng',
+        },
+        {
+          id: 'TC-A-03',
+          type: 'Trộm cắp vặt',
+          date: '2024-01-18',
+          status: 'Đã nhắc nhở',
+          location: 'Khu vực chợ thôn',
+          description: 'Thanh niên lấy trộm hàng hoá tại chợ',
+        },
+      ],
+    },
+    {
+      name: 'Thôn B',
+      theft: 3,
+      robbery: 0,
+      drugs: 2,
+      gambling: 1,
+      civilDisputes: 4,
+      cases: [
+        {
+          id: 'TC-B-01',
+          type: 'Tàng trữ trái phép chất ma tuý',
+          date: '2024-01-09',
+          status: 'Đang tạm giam',
+          location: 'Tổ 2, Thôn B',
+          description: 'Phát hiện đối tượng cất giấu chất ma tuý trong nhà riêng',
+        },
+        {
+          id: 'TC-B-02',
+          type: 'Đánh bạc ăn tiền',
+          date: '2024-01-16',
+          status: 'Đã xử phạt hành chính',
+          location: 'Nhà dân trong thôn',
+          description: 'Nhóm 5 người tổ chức đánh bài ăn tiền',
+        },
+      ],
+    },
+    {
+      name: 'Thôn C',
+      theft: 2,
+      robbery: 1,
+      drugs: 1,
+      gambling: 0,
+      civilDisputes: 2,
+      cases: [
+        {
+          id: 'TC-C-01',
+          type: 'Cướp giật tài sản',
+          date: '2024-01-11',
+          status: 'Đã khởi tố',
+          location: 'Tỉnh lộ 5 qua Thôn C',
+          description: 'Đối tượng dùng xe máy giật túi xách của người đi đường',
+        },
+      ],
+    },
+    {
+      name: 'Khu phố 1',
+      theft: 4,
+      robbery: 1,
+      drugs: 1,
+      gambling: 2,
+      civilDisputes: 5,
+      cases: [
+        {
+          id: 'TC-KP1-01',
+          type: 'Trộm cắp tài sản',
+          date: '2024-01-03',
+          status: 'Đang điều tra',
+          location: 'Tổ 1, Khu phố 1',
+          description: 'Phá khoá cửa nhà dân, lấy tài sản giá trị lớn',
+        },
+      ],
+    },
+  ],
 };
 
 // 6. Petition & Complaint Statistics
@@ -159,6 +258,77 @@ export const landManagementKPI = {
     approved: true,
     priority: 3,
   },
+  // Tổng hợp + chi tiết tranh chấp theo xã/thôn để lãnh đạo xem nhanh
+  disputesByArea: [
+    {
+      commune: 'Xã Trung Tâm',
+      village: 'Thôn A',
+      cases: 4,
+      details: [
+        {
+          id: 'TC-DD-A-01',
+          subject: 'Tranh chấp ranh giới đất vườn',
+          type: 'Tranh chấp ranh giới',
+          submittedAt: '2024-01-05',
+          status: 'Đang hoà giải',
+          parties: 'Hộ gia đình ông A và ông B',
+        },
+        {
+          id: 'TC-DD-A-02',
+          subject: 'Lấn chiếm hành lang giao thông',
+          type: 'Lấn chiếm đất công',
+          submittedAt: '2024-01-12',
+          status: 'Đang xác minh',
+          parties: 'Hộ kinh doanh tại mặt đường tỉnh lộ',
+        },
+      ],
+    },
+    {
+      commune: 'Xã Trung Tâm',
+      village: 'Thôn B',
+      cases: 3,
+      details: [
+        {
+          id: 'TC-DD-B-01',
+          subject: 'Tranh chấp quyền sử dụng đất nông nghiệp',
+          type: 'Quyền sử dụng đất',
+          submittedAt: '2024-01-08',
+          status: 'Chờ kết luận UBND xã',
+          parties: 'Hộ gia đình bà C và hợp tác xã nông nghiệp',
+        },
+      ],
+    },
+    {
+      commune: 'Xã Trung Tâm',
+      village: 'Thôn C',
+      cases: 2,
+      details: [
+        {
+          id: 'TC-DD-C-01',
+          subject: 'Tranh chấp đất ao liền kề',
+          type: 'Tranh chấp quyền sử dụng đất',
+          submittedAt: '2024-01-10',
+          status: 'Đã giải quyết',
+          parties: 'Hai hộ dân trong thôn',
+        },
+      ],
+    },
+    {
+      commune: 'Xã Vùng Cao',
+      village: 'Bản 1',
+      cases: 1,
+      details: [
+        {
+          id: 'TC-DD-V1-01',
+          subject: 'Tranh chấp đất rừng sản xuất',
+          type: 'Đất rừng',
+          submittedAt: '2024-01-15',
+          status: 'Đang phối hợp Hạt kiểm lâm',
+          parties: 'Nhóm hộ dân Bản 1',
+        },
+      ],
+    },
+  ],
 };
 
 // 11-12. Environment & Urban
@@ -192,6 +362,28 @@ export const environmentKPI = {
     ],
     priority: 2,
   },
+  // Chỉ số tổng quan môi trường cho Lãnh đạo
+  airQuality: {
+    title: 'Chất lượng không khí (AQI)',
+    overallIndex: 62,
+    goodDays: 18,
+    mediumDays: 10,
+    badDays: 2,
+    unit: 'AQI',
+  },
+  greenCoverage: {
+    title: 'Tỉ lệ cây xanh đô thị',
+    areaPerCapita: 9.5, // m2/người
+    targetAreaPerCapita: 12,
+    coveragePercent: 58,
+    targetPercent: 70,
+  },
+  waterQuality: {
+    title: 'Chất lượng nước sinh hoạt',
+    safePercent: 92,
+    warningPercent: 6,
+    unsafePercent: 2,
+  },
 };
 
 // 13-15. Culture & Social
@@ -207,6 +399,9 @@ export const cultureAndSocialKPI = {
     },
     underfunding: 3,
     priority: 2,
+    // Số hoá di tích
+    digitizedCount: 15,
+    totalDigitizable: 23,
   },
   socialWelfare: {
     title: 'Số lượng người nhận chi trả an sinh xã hội không dùng tiền mặt',
@@ -220,6 +415,13 @@ export const cultureAndSocialKPI = {
       { month: 'T5', beneficiaries: 4250 },
     ],
     priority: 3,
+    nonCashRate: 82, // %
+    byArea: [
+      { area: 'Thôn A', beneficiaries: 1250, percentage: 29.4 },
+      { area: 'Thôn B', beneficiaries: 980, percentage: 23.1 },
+      { area: 'Thôn C', beneficiaries: 750, percentage: 17.6 },
+      { area: 'Khu phố 1', beneficiaries: 1270, percentage: 29.9 },
+    ],
   },
   healthcareInsurance: {
     title: 'Tỷ lệ dân có hồ sơ sức khỏe điện tử & tham gia BHYT',

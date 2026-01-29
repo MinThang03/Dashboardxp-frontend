@@ -112,8 +112,8 @@ export function LeaderDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header with Actions */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Page Header with Actions - banner tổng quan dùng xanh nhạt */}
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 rounded-lg bg-[var(--banner)] px-6 py-6 mt-16 border border-border">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
             Bảng điều khiển Lãnh đạo
