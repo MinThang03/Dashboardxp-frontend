@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import {
   Search,
@@ -79,11 +80,21 @@ const colorClasses: Record<string, string> = {
 
 export default function RolesPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [newRoleName, setNewRoleName] = useState('');
+  const [newRoleCode, setNewRoleCode] = useState('');
 
   const filteredRoles = mockRoles.filter((role) =>
     role.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     role.code.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleAddRole = () => {
+    if (newRoleName.trim() && newRoleCode.trim()) {
+      console.log('Thêm vai trò:', { name: newRoleName, code: newRoleCode });
+      setNewRoleName('');
+      setNewRoleCode('');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -97,11 +108,59 @@ export default function RolesPage() {
             Quản lý phân quyền và vai trò trong hệ thống
           </p>
         </div>
-        <Button className="gap-2 bg-primary">
+        <Button className="gap-2 bg-primary" onClick={() => { /* Scroll to form or focus input */ document.getElementById('role-name-input')?.focus(); }}>
           <Plus className="w-4 h-4" />
           Thêm vai trò mới
         </Button>
       </div>
+
+      {/* Form Thêm Vai Trò - Gọn Nhưng Đầy Đủ */}
+      <Card className="bg-card border-border p-4">
+        <div className="space-y-3">
+          <h3 className="font-semibold text-foreground text-sm">Thêm vai trò mới</h3>
+          <div className="flex gap-3 items-end flex-wrap">
+            <div className="flex-1 min-w-48">
+              <Label className="text-xs text-muted-foreground mb-1 block">Tên vai trò</Label>
+              <Input
+                id="role-name-input"
+                placeholder="Ví dụ: Quản trị viên..."
+                value={newRoleName}
+                onChange={(e) => setNewRoleName(e.target.value)}
+                className="bg-input border-border h-9 text-sm"
+              />
+            </div>
+            <div className="flex-1 min-w-40">
+              <Label className="text-xs text-muted-foreground mb-1 block">Mã vai trò</Label>
+              <Input
+                placeholder="Ví dụ: ADMIN..."
+                value={newRoleCode}
+                onChange={(e) => setNewRoleCode(e.target.value.toUpperCase())}
+                className="bg-input border-border h-9 text-sm"
+              />
+            </div>
+            <Button
+              onClick={handleAddRole}
+              disabled={!newRoleName.trim() || !newRoleCode.trim()}
+              className="bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4"
+              size="sm"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Thêm
+            </Button>
+            <Button
+              onClick={() => {
+                setNewRoleName('');
+                setNewRoleCode('');
+              }}
+              variant="outline"
+              className="bg-transparent border-border h-9 px-4"
+              size="sm"
+            >
+              Xóa
+            </Button>
+          </div>
+        </div>
+      </Card>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
