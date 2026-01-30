@@ -19,7 +19,7 @@ import {
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
-    siteName: 'Smart Commune Dashboard',
+    siteName: 'Smart Dashboard Dashboard',
     siteUrl: 'https://ubnd.example.vn',
     adminEmail: 'admin@ubnd.vn',
     enableNotifications: true,

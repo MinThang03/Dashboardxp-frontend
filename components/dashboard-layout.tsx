@@ -25,7 +25,10 @@ import {
   HelpCircle,
   Menu,
   X,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
+import { OFFICER_MODULES } from '@/lib/officer-modules';
 import { Button } from '@/components/ui/button';
 import { AIAssistant } from '@/components/ai-assistant';
 import { useState } from 'react';
@@ -90,59 +93,43 @@ const navigationItems: MenuItem[] = [
     icon: <CheckCircle2 className="w-5 h-5" />,
     roles: ['leader'],
   },
-  // Officer menu
+  // Officer menu - Hành chính tư pháp
   {
-    label: 'Hồ sơ một cửa',
-    href: '/dashboard/cases',
-    icon: <Briefcase className="w-5 h-5" />,
-    roles: ['officer'],
-  },
-  {
-    label: 'Tư pháp - Hộ tịch',
-    href: '/dashboard/departments/justice',
+    label: 'Hành chính - Tư pháp',
+    href: '/dashboard',
     icon: <FileText className="w-5 h-5" />,
     roles: ['officer'],
+    submenu: [
+      {
+        label: 'Hộ tịch',
+        href: '/dashboard/ho-tich',
+        icon: <FileText className="w-4 h-4" />,
+        roles: ['officer'],
+      },
+      {
+        label: 'Chứng thực',
+        href: '/dashboard/chung-thuc',
+        icon: <Shield className="w-4 h-4" />,
+        roles: ['officer'],
+      },
+    ],
   },
   {
-    label: 'Địa chính - Xây dựng',
-    href: '/dashboard/departments/land',
-    icon: <MapPin className="w-5 h-5" />,
-    roles: ['officer'],
-  },
-  {
-    label: 'An ninh - Quốc phòng',
-    href: '/dashboard/departments/security',
-    icon: <Shield className="w-5 h-5" />,
-    roles: ['officer'],
-  },
-  {
-    label: 'Lao động - An sinh',
-    href: '/dashboard/departments/labor',
-    icon: <GraduationCap className="w-5 h-5" />,
-    roles: ['officer'],
-  },
-  {
-    label: 'Tài chính - Kế toán',
-    href: '/dashboard/departments/finance',
+    label: 'Tài chính',
+    href: '/dashboard/tai-chinh',
     icon: <BarChart3 className="w-5 h-5" />,
     roles: ['officer'],
   },
   {
-    label: 'Y tế - Giáo dục',
-    href: '/dashboard/departments/health',
-    icon: <Zap className="w-5 h-5" />,
+    label: 'Địa chính',
+    href: '/dashboard/dia-chinh',
+    icon: <MapPin className="w-5 h-5" />,
     roles: ['officer'],
   },
   {
     label: 'Môi trường',
-    href: '/dashboard/departments/environment',
+    href: '/dashboard/moi-truong',
     icon: <Home className="w-5 h-5" />,
-    roles: ['officer'],
-  },
-  {
-    label: 'Văn hóa - Du lịch',
-    href: '/dashboard/departments/culture',
-    icon: <HelpCircle className="w-5 h-5" />,
     roles: ['officer'],
   },
   // Citizen menu
@@ -188,7 +175,7 @@ const navigationItems: MenuItem[] = [
     label: 'Báo cáo & Phân tích',
     href: '/dashboard/reports',
     icon: <BarChart3 className="w-5 h-5" />,
-    roles: ['admin', 'leader'],
+    roles: ['leader'],
   },
 ];
 
@@ -198,6 +185,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [expandedModules, setExpandedModules] = useState<string[]>([]);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState<typeof notifications[0] | null>(null);
 
@@ -281,6 +269,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     router.push('/');
   };
 
+  const toggleModule = (moduleId: string) => {
+    setExpandedModules((prev) =>
+      prev.includes(moduleId)
+        ? prev.filter((id) => id !== moduleId)
+        : [...prev, moduleId]
+    );
+  };
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
       <AIAssistant />
@@ -306,7 +302,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {sidebarOpen && (
             <div className="font-bold text-lg text-sidebar-primary flex items-center gap-2">
               <Home className="w-6 h-6" />
-              <span>Smart Commune</span>
+              <span>Smart Dashboard</span>
             </div>
           )}
           <Button
@@ -325,7 +321,89 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-1">
-          {filteredMenuItems.map((item) => {
+          {/* Dashboard Button for Officer */}
+          {user?.role === 'officer' && (
+            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+              <button
+                className={cn(
+                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all mb-2',
+                  pathname === '/dashboard'
+                    ? 'bg-gradient-to-r from-primary/10 to-cyan-500/10 border-l-4 border-primary text-primary'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                )}
+                title={!sidebarOpen ? 'Bảng điều khiển' : undefined}
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                {sidebarOpen && <span className="truncate">Bảng điều khiển</span>}
+              </button>
+            </Link>
+          )}
+
+          {/* Officer Modules - Only for officer role */}
+          {user?.role === 'officer' && sidebarOpen && (
+            <div className="space-y-1 mt-2">
+              {OFFICER_MODULES.map((module) => {
+                const ModuleIcon = module.icon;
+                const isExpanded = expandedModules.includes(module.id);
+                
+                return (
+                  <div key={module.id}>
+                    {/* Module Header */}
+                    <button
+                      onClick={() => toggleModule(module.id)}
+                      className={cn(
+                        'w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all',
+                        'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <ModuleIcon className="w-5 h-5" />
+                        <span className="truncate">{module.name}</span>
+                      </div>
+                      {isExpanded ? (
+                        <ChevronDown className="w-4 h-4" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
+                    </button>
+
+                    {/* Module Functions (Submenu) */}
+                    {isExpanded && (
+                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-sidebar-border pl-2">
+                        {module.functions.map((func) => {
+                          const FuncIcon = func.icon;
+                          const isActive = pathname === func.path;
+                          
+                          return (
+                            <Link
+                              key={func.id}
+                              href={func.path}
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              <button
+                                className={cn(
+                                  'w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all',
+                                  isActive
+                                    ? 'bg-primary/10 text-primary font-medium'
+                                    : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground'
+                                )}
+                              >
+                                <FuncIcon className="w-4 h-4" />
+                                <span className="truncate text-xs">{func.name}</span>
+                              </button>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Other role menus */}
+          {user?.role !== 'officer' && filteredMenuItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
@@ -698,7 +776,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <div className="space-y-2 rounded-md bg-muted/40 border border-border/60 p-3">
                   <p className="text-xs font-medium text-muted-foreground">Số lượng tài liệu</p>
                   <p className="font-semibold">{selectedNotification.detail.count} tài liệu chờ phê duyệt</p>
-                  {selectedNotification.detail.urgent > 0 && (
+                  {selectedNotification.detail.urgent !== undefined && selectedNotification.detail.urgent > 0 && (
                     <p className="text-xs text-status-danger">Trong đó có {selectedNotification.detail.urgent} tài liệu khẩn cấp</p>
                   )}
                   <div className="mt-2 space-y-1">

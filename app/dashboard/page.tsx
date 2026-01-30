@@ -3,10 +3,10 @@
 import { useAuth } from '@/lib/auth-context';
 import { DashboardLayout } from '@/components/dashboard-layout';
 import { redirect } from 'next/navigation';
-import LeaderDashboard from '@/components/pages/leader-dashboard-enhanced';
-import { OfficerDashboard } from '@/components/pages/officer-dashboard';
-import { CitizenDashboard } from '@/components/pages/citizen-dashboard';
-import { AdminDashboard } from '@/components/pages/admin-dashboard';
+import { LeaderDashboardV2 } from '@/components/pages/leader-dashboard-v2';
+import { OfficerDashboardPremium } from '@/components/pages/officer-dashboard-premium';
+import { CitizenDashboardPremium } from '@/components/pages/citizen-dashboard-premium';
+import { AdminDashboardPremium } from '@/components/pages/admin-dashboard-premium';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -17,10 +17,10 @@ export default function DashboardPage() {
 
   return (
     <>
-      {user.role === 'leader' && <LeaderDashboard />}
-      {user.role === 'officer' && <OfficerDashboard />}
-      {user.role === 'citizen' && <CitizenDashboard />}
-      {user.role === 'admin' && <AdminDashboard />}
+      {user.role === 'leader' && <LeaderDashboardV2 />}
+      {user.role === 'officer' && <OfficerDashboardPremium />}
+      {user.role === 'citizen' && <CitizenDashboardPremium />}
+      {user.role === 'admin' && <AdminDashboardPremium />}
     </>
   );
 }

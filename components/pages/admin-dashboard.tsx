@@ -311,7 +311,7 @@ export function AdminDashboard() {
               {[
                 {
                   label: 'Tên hệ thống',
-                  value: 'Smart Commune Dashboard',
+                  value: 'Smart Dashboard Dashboard',
                   type: 'text',
                 },
                 {

@@ -3,101 +3,455 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Bảng màu hành chính công vụ: Xanh dương chính quyền, Xanh lá (môi trường), Cam/Vàng (cảnh báo), Đỏ (rủi ro), Xám/Trắng (nền) - dễ nhìn */
+/* ============================================
+   🎨 PREMIUM DASHBOARD THEME - REDESIGNED
+   ============================================ */
+
 :root {
-  /* Bảng màu HEX theo palette mới:
-     - Đậm 1: #222831
-     - Đậm 2: #393E46
-     - Teal:  #00ADB5
-     - Nền nhạt: #EEEEEE
-  */
-  /* Nền trang tổng thể */
-  --background: #EEEEEE;
-  --foreground: #222831;
-  --card: #FFFFFF;
-  --card-foreground: #222831;
-  --popover: #FFFFFF;
-  --popover-foreground: #222831;
-  /* Teal - màu chủ đạo */
+  /* Core Colors - Modern & Professional */
+  --background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+  --foreground: #1a202c;
+  --card: #ffffff;
+  --card-foreground: #1a202c;
+  --popover: #ffffff;
+  --popover-foreground: #1a202c;
+  
+  /* Primary - Vibrant Teal with Gradient */
   --primary: #00ADB5;
-  --primary-foreground: #FFFFFF;
+  --primary-dark: #008891;
+  --primary-light: #34d5dd;
+  --primary-foreground: #ffffff;
+  --primary-gradient: linear-gradient(135deg, #00ADB5 0%, #00d4ff 100%);
+  
+  /* Secondary */
   --secondary: #393E46;
-  --secondary-foreground: #EEEEEE;
-  --muted: #E0E0E0;
-  --muted-foreground: #6B7280;
-  --accent: #00ADB5;
-  --accent-foreground: #FFFFFF;
-  /* Đỏ - Quá hạn nghiêm trọng, vi phạm */
-  --destructive: #DC2626;
-  --destructive-foreground: #FFFFFF;
-  --border: #D1D5DB;
-  --input: #E5E7EB;
+  --secondary-foreground: #f7fafc;
+  
+  /* Accent & Muted */
+  --muted: #e2e8f0;
+  --muted-foreground: #64748b;
+  --accent: #7c3aed;
+  --accent-foreground: #ffffff;
+  
+  /* Semantic Colors */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  
+  /* UI Elements */
+  --border: #e2e8f0;
+  --input: #f8fafc;
   --ring: #00ADB5;
+  --radius: 0.75rem;
+  
+  /* Charts - Vibrant Palette */
   --chart-1: #00ADB5;
-  /* Xanh lá môi trường - Chỉ số môi trường */
-  --chart-2: #16A34A;
-  /* Cam/Vàng - KPI sắp quá hạn, điểm nóng */
-  --chart-3: #F97316;
-  --chart-4: #DC2626;
-  --chart-5: #1D242B;
-  --radius: 0.5rem;
-  /* Sidebar - nhạt hơn một chút theo palette */
-  --sidebar: #393E46;
-  --sidebar-foreground: #EEEEEE;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #ef4444;
+  --chart-5: #8b5cf6;
+  --chart-6: #ec4899;
+  
+  /* Sidebar - Modern Glass */
+  --sidebar: rgba(255, 255, 255, 0.95);
+  --sidebar-foreground: #1a202c;
   --sidebar-primary: #00ADB5;
-  --sidebar-primary-foreground: #222831;
-  --sidebar-accent: #222831;
-  --sidebar-accent-foreground: #EEEEEE;
-  --sidebar-border: #00ADB5;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f8fafc;
+  --sidebar-accent-foreground: #1a202c;
+  --sidebar-border: rgba(226, 232, 240, 0.6);
   --sidebar-ring: #00ADB5;
-  /* Banner & Footer */
-  --banner: #D6E6F2;
-  --footer-bg: #222831;
-  /* Semantic: Xanh lá, Cam/Vàng, Đỏ, Info (xanh dương) */
-  --status-success: #16A34A;
-  --status-warning: #F97316;
-  --status-danger: #DC2626;
-  --status-info: #00ADB5;
+  
+  /* Status Colors */
+  --status-success: #10b981;
+  --status-warning: #f59e0b;
+  --status-danger: #ef4444;
+  --status-info: #3b82f6;
+  
+  /* Glass & Shadow Effects */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
+
 .dark {
-  /* Xám/Trắng - Nền dark */
-  --background: oklch(0.16 0.02 0);
-  --foreground: oklch(0.95 0.01 0);
-  --card: oklch(0.2 0.02 0);
-  --card-foreground: oklch(0.95 0.01 0);
-  --popover: oklch(0.2 0.02 0);
-  --popover-foreground: oklch(0.95 0.01 0);
-  --primary: oklch(0.55 0.14 255);
-  --primary-foreground: oklch(0.98 0.01 0);
-  --secondary: oklch(0.25 0.02 0);
-  --secondary-foreground: oklch(0.95 0.01 0);
-  --muted: oklch(0.28 0.02 0);
-  --muted-foreground: oklch(0.65 0.02 0);
-  --accent: oklch(0.55 0.14 255);
-  --accent-foreground: oklch(0.98 0.01 0);
-  --destructive: oklch(0.55 0.2 25);
-  --destructive-foreground: oklch(0.98 0.01 0);
-  --border: oklch(0.32 0.02 0);
-  --input: oklch(0.25 0.02 0);
-  --ring: oklch(0.55 0.14 255);
-  --chart-1: oklch(0.55 0.14 255);
-  --chart-2: oklch(0.52 0.16 145);
-  --chart-3: oklch(0.72 0.16 75);
-  --chart-4: oklch(0.55 0.2 25);
-  --chart-5: oklch(0.5 0.14 255);
-  --sidebar: oklch(0.22 0.06 255);
-  --sidebar-foreground: oklch(0.95 0.01 0);
-  --sidebar-primary: oklch(0.5 0.14 255);
-  --sidebar-primary-foreground: oklch(0.98 0.01 0);
-  --sidebar-accent: oklch(0.32 0.08 255);
-  --sidebar-accent-foreground: oklch(0.95 0.01 0);
-  --sidebar-border: oklch(0.38 0.06 255);
-  --sidebar-ring: oklch(0.5 0.14 255);
-  --status-success: oklch(0.52 0.16 145);
-  --status-warning: oklch(0.72 0.16 75);
-  --status-danger: oklch(0.52 0.2 25);
-  --status-info: oklch(0.45 0.14 255);
+  /* Dark Mode - Modern & Elegant */
+  --background: #0f1419;
+  --foreground: #e2e8f0;
+  --card: #1a1f2e;
+  --card-foreground: #e2e8f0;
+  --popover: #1a1f2e;
+  --popover-foreground: #e2e8f0;
+  --primary: #00d4ff;
+  --primary-dark: #00ADB5;
+  --primary-light: #5ce1e6;
+  --primary-foreground: #0f1419;
+  --secondary: #252d3a;
+  --secondary-foreground: #e2e8f0;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #8b5cf6;
+  --accent-foreground: #ffffff;
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #00d4ff;
+  --sidebar: rgba(26, 31, 46, 0.95);
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #00d4ff;
+  --sidebar-primary-foreground: #0f1419;
+  --sidebar-accent: #252d3a;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: rgba(51, 65, 85, 0.6);
+  --glass-bg: rgba(26, 31, 46, 0.7);
+}
+
+/* ============================================
+   🎨 PREMIUM ANIMATIONS & EFFECTS
+   ============================================ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes gradient-y {
+  0%, 100% { background-position: 50% 0%; }
+  50% { background-position: 50% 100%; }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Animation Classes */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 1000px 100%;
+}
+
+.animate-gradient-x {
+  animation: gradient-x 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-gradient-y {
+  animation: gradient-y 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-slide-in-top {
+  animation: slideInFromTop 0.5s ease-out;
+}
+
+.animate-slide-in-bottom {
+  animation: slideInFromBottom 0.5s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.5s ease-out;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.6s ease-out;
+}
+
+.animate-rotate {
+  animation: rotate 2s linear infinite;
+}
+
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ============================================
+   🎨 GLASSMORPHISM UTILITIES
+   ============================================ */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   🎨 GRADIENT UTILITIES
+   ============================================ */
+
+.gradient-primary {
+  background: linear-gradient(135deg, #00ADB5 0%, #00d4ff 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #393E46 0%, #4a5568 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.gradient-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.gradient-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+.gradient-pink {
+  background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+}
+
+.gradient-mesh {
+  background: 
+    radial-gradient(at 40% 20%, rgba(0, 173, 181, 0.3) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(16, 185, 129, 0.3) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(236, 72, 153, 0.3) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(245, 158, 11, 0.3) 0px, transparent 50%);
+}
+
+/* ============================================
+   🎨 HOVER & INTERACTION EFFECTS
+   ============================================ */
+
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(0, 173, 181, 0.5),
+              0 0 40px rgba(0, 173, 181, 0.3);
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-rotate {
+  transition: transform 0.3s ease;
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg);
+}
+
+/* ============================================
+   🎨 CARD STYLES
+   ============================================ */
+
+.card-premium {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.card-premium:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-gradient {
+  background: linear-gradient(135deg, 
+    rgba(0, 173, 181, 0.1) 0%, 
+    rgba(0, 212, 255, 0.1) 100%
+  );
+  border: 1px solid rgba(0, 173, 181, 0.2);
+}
+
+/* ============================================
+   🎨 TEXT & TYPOGRAPHY
+   ============================================ */
+
+.text-gradient {
+  background: linear-gradient(135deg, #00ADB5 0%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-shine {
+  background: linear-gradient(
+    90deg,
+    #00ADB5 0%,
+    #00d4ff 50%,
+    #00ADB5 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ============================================
+   🎨 LOADING & SKELETON
+   ============================================ */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  opacity: 0.75;
 }
 
 @theme inline {
