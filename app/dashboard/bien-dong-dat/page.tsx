@@ -353,6 +353,7 @@ export default function BienDongDatPage() {
           </Dialog>
         </div>
       </div>
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
@@ -532,14 +533,14 @@ export default function BienDongDatPage() {
                         )}
                       </div>
                     </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Calendar className="h-3 w-3" />
-                      {item.NgayDeNghi}
-                    </div>
-                  </TableCell>
-                  <TableCell>{getTrangThaiBadge(item.TrangThai)}</TableCell>
-                  <TableCell>
+                    <TableCell className="hidden md:table-cell p-3 sm:p-4">
+                      <div className="flex items-center gap-1 text-xs sm:text-sm">
+                        <Calendar className="h-3 w-3" />
+                        {item.NgayDeNghi}
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-3 sm:p-4">{getTrangThaiBadge(item.TrangThai)}</TableCell>
+                    <TableCell className="p-3 sm:p-4">
                     <div className="flex items-center justify-end gap-1">
                       {/* View Dialog */}
                       <Dialog open={isViewOpen && selectedBienDong?.MaBienDong === item.MaBienDong} onOpenChange={handleViewDialogChange}>
@@ -693,6 +694,7 @@ export default function BienDongDatPage() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
