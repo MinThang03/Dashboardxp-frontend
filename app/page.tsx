@@ -9,10 +9,10 @@ import { Card } from '@/components/ui/card';
 import { AlertCircle, Shield, Users, Building2, UserCircle2, Sparkles, Lock, Mail, ArrowRight } from 'lucide-react';
 
 const DEMO_ACCOUNTS = [
-  { email: 'admin@ubnd.vn', password: 'password', role: 'admin' as const, name: 'Admin', icon: Shield, color: 'from-purple-500 to-pink-500' },
-  { email: 'leader@ubnd.vn', password: 'password', role: 'leader' as const, name: 'Lãnh đạo', icon: Building2, color: 'from-blue-500 to-cyan-500' },
-  { email: 'officer@ubnd.vn', password: 'password', role: 'officer' as const, name: 'Cán bộ', icon: Users, color: 'from-green-500 to-emerald-500' },
-  { email: 'citizen@ubnd.vn', password: 'password', role: 'citizen' as const, name: 'Công dân', icon: UserCircle2, color: 'from-orange-500 to-amber-500' },
+  { email: 'admin@ubnd.vn', password: 'password', role: 'admin' as const, name: 'Admin', icon: Shield, color: 'from-[#DA291C] to-[#003F88]' },
+  { email: 'leader@ubnd.vn', password: 'password', role: 'leader' as const, name: 'Lãnh đạo', icon: Building2, color: 'from-[#003F88] to-[#FFD700]' },
+  { email: 'officer@ubnd.vn', password: 'password', role: 'officer' as const, name: 'Cán bộ', icon: Users, color: 'from-[#DA291C] via-[#003F88] to-[#FFD700]' },
+  { email: 'citizen@ubnd.vn', password: 'password', role: 'citizen' as const, name: 'Công dân', icon: UserCircle2, color: 'from-[#FFD700] to-[#DA291C]' },
 ];
 
 export default function LoginPage() {
@@ -51,13 +51,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-50 via-slate-100 to-gray-100">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Gradient Orbs */}
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-[#DA291C] rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-[#003F88] rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-[#FFD700] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-float" style={{ animationDelay: '4s' }}></div>
         
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -73,13 +73,13 @@ export default function LoginPage() {
               {/* Logo */}
               <div className="inline-flex items-center gap-3 animate-slide-in-left">
                 <div className="relative">
-                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg rotate-6 hover:rotate-12 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#DA291C] to-[#003F88] rounded-2xl flex items-center justify-center shadow-lg rotate-6 hover:rotate-12 transition-transform duration-300">
                     <Sparkles className="w-8 h-8 text-white" />
                   </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 rounded-full animate-ping"></div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FFD700] rounded-full animate-ping"></div>
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                  <h1 className="text-4xl font-bold bg-gradient-to-r from-[#DA291C] to-[#003F88] bg-clip-text text-transparent">
                     Smart Dashboard
                   </h1>
                   <p className="text-sm text-slate-600 font-medium">Dashboard XP</p>
@@ -90,7 +90,7 @@ export default function LoginPage() {
               <div className="space-y-4 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
                 <h2 className="text-3xl font-bold text-slate-800">
                   Hệ thống quản lý
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#DA291C] to-[#003F88]">
                     UBND xã/phường thông minh
                   </span>
                 </h2>
@@ -121,7 +121,7 @@ export default function LoginPage() {
           <div className={`transition-all duration-500 delay-300 ${mounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
             <Card className="glass-card border-0 shadow-2xl overflow-hidden">
               {/* Card Header with Gradient */}
-              <div className="relative bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600 p-8 pb-16">
+              <div className="relative bg-gradient-to-br from-[#DA291C] via-[#003F88] to-[#FFD700] p-8 pb-16">
                 <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
                 <div className="relative">
                   <div className="inline-flex items-center gap-2 mb-4">
@@ -230,7 +230,7 @@ export default function LoginPage() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 mt-6"
+                    className="w-full h-12 bg-gradient-to-r from-[#DA291C] to-[#003F88] hover:from-[#C41F15] hover:to-[#002A63] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 mt-6"
                   >
                     {isLoading ? (
                       <div className="flex items-center gap-3">

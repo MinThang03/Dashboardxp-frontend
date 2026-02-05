@@ -52,10 +52,10 @@ import {
 
 // 10 lĩnh vực chính của hệ thống
 const CATEGORY_MODULES = [
-  { id: 'hanh-chinh-tu-phap', name: 'Hành chính tư pháp', icon: FileText, color: 'from-blue-500 to-cyan-500', textColor: 'text-blue-600', bgColor: 'bg-blue-50' },
-  { id: 'van-hoa-xa-hoi', name: 'Văn hóa - Xã hội', icon: Users, color: 'from-purple-500 to-pink-500', textColor: 'text-purple-600', bgColor: 'bg-purple-50' },
-  { id: 'kinh-te', name: 'Kinh tế', icon: Store, color: 'from-green-500 to-emerald-500', textColor: 'text-green-600', bgColor: 'bg-green-50' },
-  { id: 'an-ninh-trat-tu', name: 'An ninh - Trật tự', icon: ShieldCheck, color: 'from-red-500 to-orange-500', textColor: 'text-red-600', bgColor: 'bg-red-50' },
+  { id: 'hanh-chinh-tu-phap', name: 'Hành chính tư pháp', icon: FileText, color: 'from-secondary to-secondary', textColor: 'text-secondary', bgColor: 'bg-secondary/10' },
+  { id: 'van-hoa-xa-hoi', name: 'Văn hóa - Xã hội', icon: Users, color: 'from-primary to-primary', textColor: 'text-primary', bgColor: 'bg-primary/10' },
+  { id: 'kinh-te', name: 'Kinh tế', icon: Store, color: 'from-status-success to-status-success', textColor: 'text-status-success', bgColor: 'bg-status-success/10' },
+  { id: 'an-ninh-trat-tu', name: 'An ninh - Trật tự', icon: ShieldCheck, color: 'from-status-danger to-status-danger', textColor: 'text-status-danger', bgColor: 'bg-status-danger/10' },
   { id: 'ha-tang', name: 'Hạ tầng', icon: Building2, color: 'from-gray-500 to-slate-500', textColor: 'text-gray-600', bgColor: 'bg-gray-50' },
   { id: 'tai-chinh', name: 'Tài chính', icon: Coins, color: 'from-yellow-500 to-amber-500', textColor: 'text-yellow-600', bgColor: 'bg-yellow-50' },
   { id: 'dia-chinh', name: 'Địa chính', icon: MapPin, color: 'from-indigo-500 to-blue-500', textColor: 'text-indigo-600', bgColor: 'bg-indigo-50' },
@@ -139,7 +139,7 @@ export function LeaderDashboardV2() {
   return (
     <div className="space-y-6 pb-8">
       {/* Header */}
-      <div className="rounded-lg bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 px-6 py-6 text-white">
+      <div className="rounded-lg bg-gradient-to-r from-primary via-secondary to-primary px-6 py-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Dashboard Lãnh đạo</h1>
@@ -163,7 +163,7 @@ export function LeaderDashboardV2() {
 
       {/* Thống kê tổng quan */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-5 border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white">
+        <Card className="p-5 border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-white">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-muted-foreground font-medium">Tổng hồ sơ</p>

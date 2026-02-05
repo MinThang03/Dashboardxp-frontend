@@ -1,123 +1,656 @@
 'use client';
 
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { mockVanBan, formatDate, formatDateTime } from '@/lib/mock-data';
 import {
   FileText,
   Download,
   Calendar,
   TrendingUp,
   TrendingDown,
-  ArrowRight,
-  Clock,
+  Search,
+  Plus,
+  Eye,
+  Edit,
+  Trash2,
+  Building2,
+  User,
+  Paperclip,
 } from 'lucide-react';
 
 export default function VanBanPage() {
-  const stats = {
-    denMoi: 12,
-    diMoi: 8,
-    tongThang: 156,
-    tongNam: 1240,
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterLoai, setFilterLoai] = useState<string>('all');
+  const [filterTrangThai, setFilterTrangThai] = useState<string>('all');
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [formData, setFormData] = useState<any>({});
+
+  const filteredData = mockVanBan.filter((item) => {
+    const search = searchQuery.toLowerCase();
+    const matchesSearch =
+      item.SoKyHieu.toLowerCase().includes(search) ||
+      item.TrichYeu.toLowerCase().includes(search) ||
+      item.CoQuanBanHanh.toLowerCase().includes(search);
+    const matchesLoai = filterLoai === 'all' || item.LoaiVanBan === filterLoai;
+    const matchesTrangThai = filterTrangThai === 'all' || item.TrangThai === filterTrangThai;
+    return matchesSearch && matchesLoai && matchesTrangThai;
+  });
+
+  const handleView = (item: any) => {
+    setSelectedItem(item);
+    setIsViewOpen(true);
   };
 
-  const vanBanGanDay = [
-    { id: 'VB001', tieuDe: 'Công văn về tăng cường ANTT', loai: 'den', ngay: '2024-01-18', doKhan: 'khan' },
-    { id: 'VB002', tieuDe: 'Báo cáo tình hình tài chính', loai: 'di', ngay: '2024-01-17', doKhan: 'thuong' },
-  ];
+  const handleEdit = (item: any) => {
+    setSelectedItem(item);
+    setFormData({ ...item });
+    setIsEditOpen(true);
+  };
+
+  const handleAdd = () => {
+    setFormData({
+      SoKyHieu: '',
+      TrichYeu: '',
+      LoaiVanBan: 'Đến',
+      LoaiVB: 'Công văn',
+      CoQuanBanHanh: '',
+      NgayBanHanh: new Date().toISOString().split('T')[0],
+      NgayDen: new Date().toISOString().split('T')[0],
+      MaLinhVuc: 1,
+      NguoiXuLy: 1,
+      TrangThai: 'Mới',
+      FileDinhKem: '',
+      GhiChu: '',
+    });
+    setIsAddOpen(true);
+  };
+
+  const handleSave = () => {
+    console.log('Saving:', formData);
+    setIsEditOpen(false);
+    setIsAddOpen(false);
+  };
+
+  const handleDelete = (item: any) => {
+    if (confirm(`Bạn có chắc chắn muốn xóa văn bản ${item.SoKyHieu}?`)) {
+      console.log('Deleting:', item);
+    }
+  };
+
+  const stats = {
+    den: mockVanBan.filter(v => v.LoaiVanBan === 'Đến').length,
+    di: mockVanBan.filter(v => v.LoaiVanBan === 'Đi').length,
+    dangXuLy: mockVanBan.filter(v => v.TrangThai === 'Đang xử lý').length,
+    hoanThanh: mockVanBan.filter(v => v.TrangThai === 'Hoàn thành').length,
+  };
+
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-600 via-blue-500 to-indigo-500 p-8 text-white">
+    <div className="container mx-auto p-4 sm:p-6 max-w-7xl space-y-4 sm:space-y-6">
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-secondary via-primary to-secondary p-6 sm:p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                  <FileText className="w-6 h-6" />
+                <div className="p-2 sm:p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <h1 className="text-3xl font-bold">Quản lý Văn bản</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold">Quản lý Văn bản</h1>
               </div>
-              <p className="text-white/90">Tiếp nhận, phân loại văn bản đến/đi</p>
+              <p className="text-sm sm:text-base text-white/90">Tiếp nhận, phân loại văn bản đến/đi</p>
             </div>
-            <Button className="bg-white text-cyan-600 hover:bg-white/90">
-              <Download className="w-4 h-4 mr-2" />
-              Xuất báo cáo
+            <Button onClick={handleAdd} className="bg-white text-primary hover:bg-white/90 w-full sm:w-auto">
+              <Plus className="w-4 h-4 mr-2" />
+              Thêm văn bản
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="p-6 border-0 shadow-lg hover-lift">
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-red-500/10 rounded-xl">
-              <TrendingDown className="w-6 h-6 text-red-600" />
+            <div className="p-2 sm:p-3 bg-status-danger/10 rounded-xl">
+              <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-status-danger" />
             </div>
-            <Badge className="bg-red-500/10 text-red-700 border-0">Mới</Badge>
+            <Badge className="bg-status-danger/10 text-status-danger border-0 text-xs sm:text-sm">Đến</Badge>
           </div>
-          <p className="text-3xl font-bold">{stats.denMoi}</p>
-          <p className="text-sm text-muted-foreground">VB đến hôm nay</p>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.den}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">VB đến</p>
         </Card>
 
-        <Card className="p-6 border-0 shadow-lg hover-lift">
+        <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-green-500/10 rounded-xl">
-              <TrendingUp className="w-6 h-6 text-green-600" />
+            <div className="p-2 sm:p-3 bg-status-success/10 rounded-xl">
+              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-status-success" />
             </div>
-            <Badge className="bg-green-500/10 text-green-700 border-0">Mới</Badge>
+            <Badge className="bg-status-success/10 text-status-success border-0 text-xs sm:text-sm">Đi</Badge>
           </div>
-          <p className="text-3xl font-bold">{stats.diMoi}</p>
-          <p className="text-sm text-muted-foreground">VB đi hôm nay</p>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.di}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">VB đi</p>
         </Card>
 
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="p-3 bg-blue-500/10 rounded-xl mb-2">
-            <Calendar className="w-6 h-6 text-blue-600" />
+        <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-2 sm:p-3 bg-primary/10 rounded-xl">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            </div>
+            <Badge className="bg-primary/10 text-primary border-0 text-xs sm:text-sm">Đang xử lý</Badge>
           </div>
-          <p className="text-3xl font-bold">{stats.tongThang}</p>
-          <p className="text-sm text-muted-foreground">Tổng tháng này</p>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.dangXuLy}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Đang xử lý</p>
         </Card>
 
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="p-3 bg-purple-500/10 rounded-xl mb-2">
-            <FileText className="w-6 h-6 text-purple-600" />
+        <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-2 sm:p-3 bg-secondary/10 rounded-xl">
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
+            </div>
+            <Badge className="bg-secondary/10 text-secondary border-0 text-xs sm:text-sm">Hoàn thành</Badge>
           </div>
-          <p className="text-3xl font-bold">{stats.tongNam}</p>
-          <p className="text-sm text-muted-foreground">Tổng năm nay</p>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.hoanThanh}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Hoàn thành</p>
         </Card>
       </div>
 
-      <Card className="p-6 border-0 shadow-lg">
-        <h3 className="text-lg font-semibold mb-4">Văn bản gần đây</h3>
-        <div className="space-y-3">
-          {vanBanGanDay.map((vb) => (
-            <div key={vb.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${vb.loai === 'den' ? 'bg-red-500/10' : 'bg-green-500/10'}`}>
-                  <FileText className={`w-5 h-5 ${vb.loai === 'den' ? 'text-red-600' : 'text-green-600'}`} />
-                </div>
-                <div>
-                  <p className="font-semibold">{vb.tieuDe}</p>
-                  <p className="text-sm text-muted-foreground">{vb.id} • {vb.ngay}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                {vb.doKhan === 'khan' && (
-                  <Badge className="bg-red-500/10 text-red-700 border-0">
-                    <Clock className="w-3 h-3 mr-1" />
-                    Khẩn
-                  </Badge>
-                )}
-                <Button variant="ghost" size="sm">
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          ))}
+      {/* Search & Filter */}
+      <Card className="p-4 border-0 shadow-lg">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Tìm theo số ký hiệu, trích yếu, cơ quan..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 sm:pl-10 h-10 sm:h-11 bg-slate-50 text-sm sm:text-base"
+            />
+          </div>
+          <select
+            value={filterLoai}
+            onChange={(e) => setFilterLoai(e.target.value)}
+            className="h-10 sm:h-11 px-3 sm:px-4 border border-input rounded-lg bg-slate-50 text-sm sm:text-base w-full sm:w-auto"
+          >
+            <option value="all">Tất cả loại</option>
+            <option value="Đến">VB Đến</option>
+            <option value="Đi">VB Đi</option>
+          </select>
+          <select
+            value={filterTrangThai}
+            onChange={(e) => setFilterTrangThai(e.target.value)}
+            className="h-10 sm:h-11 px-3 sm:px-4 border border-input rounded-lg bg-slate-50 text-sm sm:text-base w-full sm:w-auto"
+          >
+            <option value="all">Tất cả trạng thái</option>
+            <option value="Mới">Mới</option>
+            <option value="Đang xử lý">Đang xử lý</option>
+            <option value="Hoàn thành">Hoàn thành</option>
+          </select>
+          <Button variant="outline" className="h-10 sm:h-11 w-full sm:w-auto">
+            <Download className="w-4 h-4 mr-2" />
+            <span className="hidden sm:inline">Xuất Excel</span>
+            <span className="sm:hidden">Xuất</span>
+          </Button>
         </div>
       </Card>
+
+      {/* Table */}
+      <Card className="border-0 shadow-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-slate-50 border-b">
+              <tr>
+                <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold">Số ký hiệu</th>
+                <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold hidden md:table-cell">Trích yếu</th>
+                <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold hidden sm:table-cell">Loại VB</th>
+                <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold hidden lg:table-cell">Cơ quan BH</th>
+                <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold hidden md:table-cell">Ngày BH</th>
+                <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold">Trạng thái</th>
+                <th className="text-right p-3 sm:p-4 text-xs sm:text-sm font-semibold">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.map((item) => (
+                <tr key={item.MaVanBan} className="border-b hover:bg-slate-50 transition-colors">
+                  <td className="p-3 sm:p-4">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-secondary flex-shrink-0" />
+                      <div className="min-w-0">
+                        <span className="font-semibold text-xs sm:text-sm text-primary">{item.SoKyHieu}</span>
+                        <p className="text-xs text-muted-foreground md:hidden truncate">{item.TrichYeu}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="p-3 sm:p-4 hidden md:table-cell">
+                    <p className="max-w-xs sm:max-w-md truncate text-xs sm:text-sm">{item.TrichYeu}</p>
+                  </td>
+                  <td className="p-3 sm:p-4 hidden sm:table-cell">
+                    <Badge className={item.LoaiVanBan === 'Đến' ? 'bg-status-danger/10 text-status-danger border-0 text-xs' : 'bg-status-success/10 text-status-success border-0 text-xs'}>
+                      {item.LoaiVB}
+                    </Badge>
+                  </td>
+                  <td className="p-3 sm:p-4 hidden lg:table-cell">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                      <Building2 className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                      <span className="max-w-xs truncate">{item.CoQuanBanHanh}</span>
+                    </div>
+                  </td>
+                  <td className="p-3 sm:p-4 hidden md:table-cell text-xs sm:text-sm text-muted-foreground">
+                    {formatDate(item.NgayBanHanh)}
+                  </td>
+                  <td className="p-3 sm:p-4">
+                    <Badge 
+                      className={
+                        item.TrangThai === 'Hoàn thành' 
+                          ? 'bg-status-success/10 text-status-success border-0 text-xs sm:text-sm' 
+                          : item.TrangThai === 'Đang xử lý'
+                          ? 'bg-secondary/10 text-secondary border-0 text-xs sm:text-sm'
+                          : 'bg-status-warning/10 text-status-warning border-0 text-xs sm:text-sm'
+                      }
+                    >
+                      {item.TrangThai}
+                    </Badge>
+                  </td>
+                  <td className="p-3 sm:p-4">
+                    <div className="flex items-center justify-end gap-1 sm:gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 sm:h-8 sm:w-8 p-0"
+                        onClick={() => handleView(item)}
+                      >
+                        <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 sm:h-8 sm:w-8 p-0"
+                        onClick={() => handleEdit(item)}
+                      >
+                        <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 sm:h-8 sm:w-8 p-0 text-status-danger hover:text-status-danger"
+                        onClick={() => handleDelete(item)}
+                      >
+                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* View Dialog */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="w-[95vw] sm:w-full max-w-2xl sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-lg sm:text-xl">Chi tiết văn bản</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">Thông tin chi tiết văn bản</DialogDescription>
+          </DialogHeader>
+          {selectedItem && (
+            <div className="space-y-3 sm:space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="sm:col-span-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Số ký hiệu</Label>
+                  <p className="font-semibold text-base sm:text-lg">{selectedItem.SoKyHieu}</p>
+                </div>
+                <div className="sm:col-span-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Trích yếu</Label>
+                  <p className="font-medium text-xs sm:text-sm">{selectedItem.TrichYeu}</p>
+                </div>
+                <div>
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Loại văn bản</Label>
+                  <Badge className={selectedItem.LoaiVanBan === 'Đến' ? 'bg-status-danger/10 text-status-danger border-0 text-xs' : 'bg-status-success/10 text-status-success border-0 text-xs'}>
+                    {selectedItem.LoaiVanBan}
+                  </Badge>
+                </div>
+                <div>
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Loại VB</Label>
+                  <p className="font-medium text-xs sm:text-sm">{selectedItem.LoaiVB}</p>
+                </div>
+                <div className="sm:col-span-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Cơ quan ban hành</Label>
+                  <p className="font-medium text-xs sm:text-sm">{selectedItem.CoQuanBanHanh}</p>
+                </div>
+                <div>
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Ngày ban hành</Label>
+                  <p className="font-medium text-xs sm:text-sm">{formatDate(selectedItem.NgayBanHanh)}</p>
+                </div>
+                <div>
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Ngày đến</Label>
+                  <p className="font-medium text-xs sm:text-sm">{formatDate(selectedItem.NgayDen)}</p>
+                </div>
+                <div>
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Trạng thái</Label>
+                  <Badge className={
+                    selectedItem.TrangThai === 'Hoàn thành' 
+                      ? 'bg-status-success/10 text-status-success border-0 text-xs sm:text-sm' 
+                      : selectedItem.TrangThai === 'Đang xử lý'
+                      ? 'bg-secondary/10 text-secondary border-0 text-xs sm:text-sm'
+                      : 'bg-status-warning/10 text-status-warning border-0 text-xs sm:text-sm'
+                  }>
+                    {selectedItem.TrangThai}
+                  </Badge>
+                </div>
+                {selectedItem.FileDinhKem && (
+                  <div className="sm:col-span-2">
+                    <Label className="text-xs sm:text-sm text-muted-foreground">File đính kèm</Label>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Paperclip className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
+                      <a href={selectedItem.FileDinhKem} className="text-primary hover:underline text-xs sm:text-sm">
+                        Tải xuống file
+                      </a>
+                    </div>
+                  </div>
+                )}
+                {selectedItem.GhiChu && (
+                  <div className="sm:col-span-2">
+                    <Label className="text-xs sm:text-sm text-muted-foreground">Ghi chú</Label>
+                    <p className="font-medium text-xs sm:text-sm">{selectedItem.GhiChu}</p>
+                  </div>
+                )}
+                <div className="sm:col-span-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground">Ngày tạo</Label>
+                  <p className="font-medium text-xs sm:text-sm">{formatDateTime(selectedItem.NgayTao)}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter className="flex-col-reverse sm:flex-row gap-2 sm:gap-0">
+            <Button variant="outline" className="w-full sm:w-auto" onClick={() => setIsViewOpen(false)}>
+              Đóng
+            </Button>
+            <Button className="w-full sm:w-auto" onClick={() => {
+              setIsViewOpen(false);
+              handleEdit(selectedItem);
+            }}>
+              <Edit className="w-4 h-4 mr-2" />
+              Chỉnh sửa
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent className="w-[95vw] sm:w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-lg sm:text-xl">Chỉnh sửa văn bản</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">Cập nhật thông tin văn bản</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div>
+                <Label htmlFor="SoKyHieu">Số ký hiệu <span className="text-status-danger">*</span></Label>
+                <Input
+                  id="SoKyHieu"
+                  value={formData.SoKyHieu || ''}
+                  onChange={(e) => setFormData({ ...formData, SoKyHieu: e.target.value })}
+                  placeholder="VD: 01/CV-UBND"
+                  className="h-10"
+                />
+              </div>
+              <div>
+                <Label htmlFor="LoaiVanBan">Loại văn bản</Label>
+                <select
+                  id="LoaiVanBan"
+                  value={formData.LoaiVanBan || 'Đến'}
+                  onChange={(e) => setFormData({ ...formData, LoaiVanBan: e.target.value })}
+                  className="w-full h-10 px-3 border border-input rounded-md"
+                >
+                  <option value="Đến">Đến</option>
+                  <option value="Đi">Đi</option>
+                </select>
+              </div>
+              <div className="sm:col-span-2">
+                <Label htmlFor="TrichYeu">Trích yếu <span className="text-status-danger">*</span></Label>
+                <Textarea
+                  id="TrichYeu"
+                  value={formData.TrichYeu || ''}
+                  onChange={(e) => setFormData({ ...formData, TrichYeu: e.target.value })}
+                  placeholder="Nhập trích yếu văn bản"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="LoaiVB">Loại VB</Label>
+                <select
+                  id="LoaiVB"
+                  value={formData.LoaiVB || 'Công văn'}
+                  onChange={(e) => setFormData({ ...formData, LoaiVB: e.target.value })}
+                  className="w-full h-10 px-3 border border-input rounded-md"
+                >
+                  <option value="Công văn">Công văn</option>
+                  <option value="Quyết định">Quyết định</option>
+                  <option value="Báo cáo">Báo cáo</option>
+                  <option value="Thông báo">Thông báo</option>
+                  <option value="Tờ trình">Tờ trình</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="TrangThai">Trạng thái</Label>
+                <select
+                  id="TrangThai"
+                  value={formData.TrangThai || 'Mới'}
+                  onChange={(e) => setFormData({ ...formData, TrangThai: e.target.value })}
+                  className="w-full h-10 px-3 border border-input rounded-md"
+                >
+                  <option value="Mới">Mới</option>
+                  <option value="Đang xử lý">Đang xử lý</option>
+                  <option value="Hoàn thành">Hoàn thành</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="CoQuanBanHanh">Cơ quan ban hành</Label>
+                <Input
+                  id="CoQuanBanHanh"
+                  value={formData.CoQuanBanHanh || ''}
+                  onChange={(e) => setFormData({ ...formData, CoQuanBanHanh: e.target.value })}
+                  placeholder="Nhập tên cơ quan"
+                />
+              </div>
+              <div>
+                <Label htmlFor="NgayBanHanh">Ngày ban hành</Label>
+                <Input
+                  id="NgayBanHanh"
+                  type="date"
+                  value={formData.NgayBanHanh || ''}
+                  onChange={(e) => setFormData({ ...formData, NgayBanHanh: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="NgayDen">Ngày đến</Label>
+                <Input
+                  id="NgayDen"
+                  type="date"
+                  value={formData.NgayDen || ''}
+                  onChange={(e) => setFormData({ ...formData, NgayDen: e.target.value })}
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="FileDinhKem">File đính kèm</Label>
+                <Input
+                  id="FileDinhKem"
+                  value={formData.FileDinhKem || ''}
+                  onChange={(e) => setFormData({ ...formData, FileDinhKem: e.target.value })}
+                  placeholder="Đường dẫn file"
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="GhiChu">Ghi chú</Label>
+                <Textarea
+                  id="GhiChu"
+                  value={formData.GhiChu || ''}
+                  onChange={(e) => setFormData({ ...formData, GhiChu: e.target.value })}
+                  placeholder="Nhập ghi chú (nếu có)"
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleSave}>
+              Lưu thay đổi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Dialog */}
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Thêm văn bản mới</DialogTitle>
+            <DialogDescription>Nhập thông tin văn bản mới</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="add_SoKyHieu">Số ký hiệu <span className="text-red-500">*</span></Label>
+                <Input
+                  id="add_SoKyHieu"
+                  value={formData.SoKyHieu || ''}
+                  onChange={(e) => setFormData({ ...formData, SoKyHieu: e.target.value })}
+                  placeholder="VD: 01/CV-UBND"
+                />
+              </div>
+              <div>
+                <Label htmlFor="add_LoaiVanBan">Loại văn bản</Label>
+                <select
+                  id="add_LoaiVanBan"
+                  value={formData.LoaiVanBan || 'Đến'}
+                  onChange={(e) => setFormData({ ...formData, LoaiVanBan: e.target.value })}
+                  className="w-full h-10 px-3 border border-input rounded-md"
+                >
+                  <option value="Đến">Đến</option>
+                  <option value="Đi">Đi</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="add_TrichYeu">Trích yếu <span className="text-red-500">*</span></Label>
+                <Textarea
+                  id="add_TrichYeu"
+                  value={formData.TrichYeu || ''}
+                  onChange={(e) => setFormData({ ...formData, TrichYeu: e.target.value })}
+                  placeholder="Nhập trích yếu văn bản"
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="add_LoaiVB">Loại VB</Label>
+                <select
+                  id="add_LoaiVB"
+                  value={formData.LoaiVB || 'Công văn'}
+                  onChange={(e) => setFormData({ ...formData, LoaiVB: e.target.value })}
+                  className="w-full h-10 px-3 border border-input rounded-md"
+                >
+                  <option value="Công văn">Công văn</option>
+                  <option value="Quyết định">Quyết định</option>
+                  <option value="Báo cáo">Báo cáo</option>
+                  <option value="Thông báo">Thông báo</option>
+                  <option value="Tờ trình">Tờ trình</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="add_TrangThai">Trạng thái</Label>
+                <select
+                  id="add_TrangThai"
+                  value={formData.TrangThai || 'Mới'}
+                  onChange={(e) => setFormData({ ...formData, TrangThai: e.target.value })}
+                  className="w-full h-10 px-3 border border-input rounded-md"
+                >
+                  <option value="Mới">Mới</option>
+                  <option value="Đang xử lý">Đang xử lý</option>
+                  <option value="Hoàn thành">Hoàn thành</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="add_CoQuanBanHanh">Cơ quan ban hành</Label>
+                <Input
+                  id="add_CoQuanBanHanh"
+                  value={formData.CoQuanBanHanh || ''}
+                  onChange={(e) => setFormData({ ...formData, CoQuanBanHanh: e.target.value })}
+                  placeholder="Nhập tên cơ quan"
+                />
+              </div>
+              <div>
+                <Label htmlFor="add_NgayBanHanh">Ngày ban hành</Label>
+                <Input
+                  id="add_NgayBanHanh"
+                  type="date"
+                  value={formData.NgayBanHanh || ''}
+                  onChange={(e) => setFormData({ ...formData, NgayBanHanh: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="add_NgayDen">Ngày đến</Label>
+                <Input
+                  id="add_NgayDen"
+                  type="date"
+                  value={formData.NgayDen || ''}
+                  onChange={(e) => setFormData({ ...formData, NgayDen: e.target.value })}
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="add_FileDinhKem">File đính kèm</Label>
+                <Input
+                  id="add_FileDinhKem"
+                  value={formData.FileDinhKem || ''}
+                  onChange={(e) => setFormData({ ...formData, FileDinhKem: e.target.value })}
+                  placeholder="Đường dẫn file"
+                />
+              </div>
+              <div className="col-span-2">
+                <Label htmlFor="add_GhiChu">Ghi chú</Label>
+                <Textarea
+                  id="add_GhiChu"
+                  value={formData.GhiChu || ''}
+                  onChange={(e) => setFormData({ ...formData, GhiChu: e.target.value })}
+                  placeholder="Nhập ghi chú (nếu có)"
+                  rows={2}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddOpen(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleSave}>
+              <Plus className="w-4 h-4 mr-2" />
+              Thêm mới
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

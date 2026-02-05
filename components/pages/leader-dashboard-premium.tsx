@@ -113,7 +113,7 @@ export function LeaderDashboardPremium() {
   return (
     <div className="space-y-6 p-6">
       {/* Premium Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-secondary to-primary p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
@@ -156,7 +156,7 @@ export function LeaderDashboardPremium() {
       {/* Premium KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="relative overflow-hidden border-0 shadow-xl hover-lift">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-status-success/10 to-status-success/5"></div>
           <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full -mr-16 -mt-16"></div>
           <div className="relative p-6">
             <div className="flex items-start justify-between mb-4">
@@ -172,13 +172,13 @@ export function LeaderDashboardPremium() {
               <span className="font-medium">+5.2% so với tháng trước</span>
             </div>
             <div className="mt-4 h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full" style={{ width: '93%' }}></div>
+              <div className="h-full bg-gradient-to-r from-status-success to-status-success rounded-full" style={{ width: '93%' }}></div>
             </div>
           </div>
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-xl hover-lift">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-secondary/5"></div>
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -mr-16 -mt-16"></div>
           <div className="relative p-6">
             <div className="flex items-start justify-between mb-4">
@@ -211,7 +211,7 @@ export function LeaderDashboardPremium() {
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-xl hover-lift">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5"></div>
           <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full -mr-16 -mt-16"></div>
           <div className="relative p-6">
             <div className="flex items-start justify-between mb-4">
@@ -232,14 +232,14 @@ export function LeaderDashboardPremium() {
                 <span className="font-semibold">65%</span>
               </div>
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full" style={{ width: '65%' }}></div>
+                <div className="h-full bg-gradient-to-r from-primary to-primary rounded-full" style={{ width: '65%' }}></div>
               </div>
             </div>
           </div>
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-xl hover-lift">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-yellow-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-accent/5"></div>
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full -mr-16 -mt-16"></div>
           <div className="relative p-6">
             <div className="flex items-start justify-between mb-4">
@@ -459,7 +459,7 @@ export function LeaderDashboardPremium() {
               key={dept.department}
               className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
             >
-              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-secondary to-secondary rounded-xl flex items-center justify-center text-white font-bold">
                 {index + 1}
               </div>
               <div className="flex-1">
@@ -485,7 +485,7 @@ export function LeaderDashboardPremium() {
               <div className="w-32">
                 <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full"
+                    className="h-full bg-gradient-to-r from-secondary to-secondary rounded-full"
                     style={{ width: `${dept.score}%` }}
                   ></div>
                 </div>
@@ -499,7 +499,7 @@ export function LeaderDashboardPremium() {
       <Card className="p-6 border-0 shadow-xl">
         <h3 className="text-lg font-semibold mb-4">Hành động nhanh</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Button className="h-auto py-4 flex-col gap-2 bg-gradient-to-br from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700">
+          <Button className="h-auto py-4 flex-col gap-2 bg-gradient-to-br from-secondary to-secondary hover:from-secondary/90 hover:to-secondary/90">
             <Zap className="w-5 h-5" />
             <span>Phê duyệt hồ sơ</span>
           </Button>

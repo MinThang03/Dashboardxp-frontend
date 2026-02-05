@@ -73,10 +73,10 @@ const roleLabels: Record<string, string> = {
 };
 
 const roleColors: Record<string, string> = {
-  admin: 'bg-red-500/20 text-red-400 border-red-500/30',
-  leader: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-  officer: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  citizen: 'bg-green-500/20 text-green-400 border-green-500/30',
+  admin: 'bg-primary/20 text-primary border-primary/30',
+  leader: 'bg-secondary/20 text-secondary border-secondary/30',
+  officer: 'bg-accent/20 text-accent border-accent/30',
+  citizen: 'bg-status-success/20 text-status-success border-status-success/30',
 };
 
 export default function UsersPage() {

@@ -71,7 +71,7 @@ export default function HoKhauPage() {
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-purple-500 to-pink-500 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-accent to-primary p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">

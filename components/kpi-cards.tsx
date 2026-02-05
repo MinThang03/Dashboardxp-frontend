@@ -49,7 +49,7 @@ export function BudgetRevenueCard() {
             <CardTitle className="text-lg">{budgetRevenueKPI.title}</CardTitle>
             <CardDescription>{budgetRevenueKPI.period}</CardDescription>
           </div>
-          <Badge className="bg-green-100 text-green-800 animate-pulse">Cao</Badge>
+          <Badge className="bg-primary/10 text-primary border-primary/30 animate-pulse">Cao</Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -80,8 +80,8 @@ export function BudgetRevenueCard() {
           <AreaChart data={budgetRevenueKPI.monthlyData}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                <stop offset="5%" stopColor="#DA291C" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#DA291C" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -97,7 +97,7 @@ export function BudgetRevenueCard() {
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#3b82f6"
+              stroke="#DA291C"
               fillOpacity={1}
               fill="url(#colorValue)"
               isAnimationActive={true}

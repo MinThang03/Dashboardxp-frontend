@@ -1,25 +1,416 @@
 'use client';
 
-import { ModulePageTemplate } from '@/components/module-page-template';
-import { Heart, Users, Award, TrendingDown } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Heart,
+  Users,
+  Award,
+  TrendingDown,
+  Search,
+  Plus,
+  Download,
+  Eye,
+  Filter,
+  Home,
+  ArrowLeft,
+  FileText,
+  CheckCircle2,
+  Clock,
+} from 'lucide-react';
+import { mockHoNgheo, mockRaSoatHoNgheo, mockChinhSachHoNgheo } from '@/lib/mock-data';
 
 export default function HoNgheoPage() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Tính toán thống kê từ dữ liệu thực
+  const stats = {
+    hoNgheo: mockHoNgheo.filter(h => h.PhanLoai === 'Hộ nghèo').length,
+    hoCanNgheo: mockHoNgheo.filter(h => h.PhanLoai === 'Hộ cận nghèo').length,
+    daThoatNgheo: mockHoNgheo.filter(h => h.TrangThai === 'Đã thoát nghèo').length,
+    dangHuong: mockChinhSachHoNgheo.filter(cs => cs.TrangThai === 'Đang hưởng').length,
+  };
+
+  // Lọc dữ liệu
+  const filteredHoNgheo = mockHoNgheo.filter(h =>
+    h.ChuHo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    h.DiaChi.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleView = (item: any) => {
+    setSelectedItem(item);
+    setIsViewOpen(true);
+  };
+
+  const handleExport = () => {
+    const csvContent = [
+      ['Mã hộ', 'Họ tên chủ hộ', 'CCCD', 'Số nhân khẩu', 'Thu nhập', 'Loại', 'Trạng thái'],
+      ...filteredData.map(item => [
+        item.MaHo,
+        item.TenChuHo,
+        item.CCCD,
+        item.SoNhanKhau,
+        item.ThuNhap,
+        item.LoaiHoNgheo,
+        item.TrangThai
+      ])
+    ].map(row => row.join(',')).join('\n');
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ho-ngheo-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
+  const handleAdd = () => {
+    setIsAddOpen(true);
+  };
+
+  const handleFilter = () => {
+    setIsFilterOpen(true);
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'Đang hưởng chính sách':
+        return <Badge className="bg-green-500/10 text-green-700 border-0"><CheckCircle2 className="w-3 h-3 mr-1" />Đang hưởng</Badge>;
+      case 'Đã thoát nghèo':
+        return <Badge className="bg-blue-500/10 text-blue-700 border-0"><Award className="w-3 h-3 mr-1" />{status}</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  const getPhanLoaiBadge = (phanLoai: string) => {
+    switch (phanLoai) {
+      case 'Hộ nghèo':
+        return <Badge className="bg-red-500/10 text-red-700 border-0">{phanLoai}</Badge>;
+      case 'Hộ cận nghèo':
+        return <Badge className="bg-amber-500/10 text-amber-700 border-0">{phanLoai}</Badge>;
+      default:
+        return <Badge variant="outline">{phanLoai}</Badge>;
+    }
+  };
+
   return (
-    <ModulePageTemplate
-      title="Quản lý Hộ nghèo - Cận nghèo"
-      description="Rà soát, quản lý hộ nghèo, hộ cận nghèo"
-      gradientColors="from-pink-600 via-rose-500 to-red-500"
-      icon={Heart}
-      stats={[
-        { label: 'Hộ nghèo', value: 45, color: 'text-red-600', icon: Users },
-        { label: 'Hộ cận nghèo', value: 32, color: 'text-amber-600', icon: Users },
-        { label: 'Đã thoát nghèo', value: 18, color: 'text-green-600', icon: Award },
-        { label: 'Giảm so với năm trước', value: '12%', color: 'text-green-600', icon: TrendingDown },
-      ]}
-      sampleData={[
-        { id: 'HN001', title: 'Hộ Nguyễn Văn A', status: 'Hộ nghèo', date: '2024-01-01' },
-        { id: 'CN001', title: 'Hộ Trần Thị B', status: 'Cận nghèo', date: '2024-01-01' },
-      ]}
-    />
+    <div className="space-y-6 p-6">
+      {/* Breadcrumb */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <button onClick={() => router.push('/dashboard')} className="flex items-center gap-1 hover:text-primary transition-colors">
+            <Home className="w-4 h-4" />
+            Bàn làm việc
+          </button>
+          <span>/</span>
+          <span className="text-foreground font-medium">Hộ nghèo - Cận nghèo</span>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => router.back()} className="gap-2">
+          <ArrowLeft className="w-4 h-4" />
+          Quay lại
+        </Button>
+      </div>
+
+      {/* Header */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-status-danger to-primary p-8 text-white">
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div className="relative z-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                  <Heart className="w-6 h-6" />
+                </div>
+                <h1 className="text-3xl font-bold">Quản lý Hộ nghèo - Cận nghèo</h1>
+              </div>
+              <p className="text-white/90">Rà soát, quản lý hộ nghèo, hộ cận nghèo và chính sách hỗ trợ</p>
+            </div>
+            <div className="flex gap-3">
+              <Button className="bg-white text-rose-600 hover:bg-white/90" onClick={handleAdd}>
+                <Plus className="w-4 h-4 mr-2" />
+                Thêm hộ
+              </Button>
+              <Button className="bg-white/20 backdrop-blur-sm hover:bg-white/30 border-0" onClick={handleExport}>
+                <Download className="w-4 h-4 mr-2" />
+                Xuất báo cáo
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-3 bg-red-100 rounded-xl">
+              <Users className="w-6 h-6 text-red-600" />
+            </div>
+          </div>
+          <p className="text-3xl font-bold">{stats.hoNgheo}</p>
+          <p className="text-sm text-muted-foreground">Hộ nghèo</p>
+        </Card>
+        <Card className="p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-3 bg-amber-100 rounded-xl">
+              <Users className="w-6 h-6 text-amber-600" />
+            </div>
+          </div>
+          <p className="text-3xl font-bold">{stats.hoCanNgheo}</p>
+          <p className="text-sm text-muted-foreground">Hộ cận nghèo</p>
+        </Card>
+        <Card className="p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-3 bg-green-100 rounded-xl">
+              <Award className="w-6 h-6 text-green-600" />
+            </div>
+          </div>
+          <p className="text-3xl font-bold">{stats.daThoatNgheo}</p>
+          <p className="text-sm text-muted-foreground">Đã thoát nghèo</p>
+        </Card>
+        <Card className="p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <FileText className="w-6 h-6 text-blue-600" />
+            </div>
+          </div>
+          <p className="text-3xl font-bold">{stats.dangHuong}</p>
+          <p className="text-sm text-muted-foreground">Đang hưởng chính sách</p>
+        </Card>
+      </div>
+
+      {/* Tabs */}
+      <Tabs defaultValue="danh-sach" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="danh-sach">Danh sách hộ</TabsTrigger>
+          <TabsTrigger value="ra-soat">Kết quả rà soát</TabsTrigger>
+          <TabsTrigger value="chinh-sach">Chính sách hỗ trợ</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="danh-sach" className="space-y-4">
+          {/* Search */}
+          <Card className="p-4 border-0 shadow-lg">
+            <div className="flex gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Tìm kiếm hộ..."
+                  className="pl-10 h-11 bg-slate-50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Button variant="outline" className="h-11" onClick={handleFilter}>
+                <Filter className="w-4 h-4 mr-2" />
+                Lọc
+              </Button>
+            </div>
+          </Card>
+
+          {/* Table */}
+          <Card className="p-6 border-0 shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-semibold">Danh sách hộ nghèo - cận nghèo</h3>
+              <Badge className="bg-primary/10 text-primary border-0">
+                Tổng: {filteredHoNgheo.length} hộ
+              </Badge>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b">
+                  <tr>
+                    <th className="text-left p-4 font-semibold">Mã hộ</th>
+                    <th className="text-left p-4 font-semibold">Chủ hộ</th>
+                    <th className="text-left p-4 font-semibold">Địa chỉ</th>
+                    <th className="text-right p-4 font-semibold">Số nhân khẩu</th>
+                    <th className="text-left p-4 font-semibold">Phân loại</th>
+                    <th className="text-left p-4 font-semibold">Trạng thái</th>
+                    <th className="text-right p-4 font-semibold">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredHoNgheo.map((ho) => (
+                    <tr key={ho.MaHo} className="border-b hover:bg-slate-50 transition-colors">
+                      <td className="p-4">
+                        <span className="font-semibold text-primary">HN-{String(ho.MaHo).padStart(3, '0')}</span>
+                      </td>
+                      <td className="p-4 font-medium">{ho.ChuHo}</td>
+                      <td className="p-4 text-sm text-muted-foreground">{ho.DiaChi}</td>
+                      <td className="p-4 text-right">{ho.SoNhanKhau}</td>
+                      <td className="p-4">{getPhanLoaiBadge(ho.PhanLoai)}</td>
+                      <td className="p-4">{getStatusBadge(ho.TrangThai)}</td>
+                      <td className="p-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleView(ho)}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="ra-soat" className="space-y-4">
+          <Card className="p-6 border-0 shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Kết quả rà soát gần đây</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b">
+                  <tr>
+                    <th className="text-left p-4 font-semibold">Mã</th>
+                    <th className="text-left p-4 font-semibold">Chủ hộ</th>
+                    <th className="text-left p-4 font-semibold">Ngày rà soát</th>
+                    <th className="text-left p-4 font-semibold">Kết quả</th>
+                    <th className="text-right p-4 font-semibold">Điểm</th>
+                    <th className="text-left p-4 font-semibold">Tiêu chí thiếu hụt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mockRaSoatHoNgheo.map((rs) => (
+                    <tr key={rs.RaSoatID} className="border-b hover:bg-slate-50 transition-colors">
+                      <td className="p-4">
+                        <span className="font-semibold text-primary">RS-{String(rs.RaSoatID).padStart(3, '0')}</span>
+                      </td>
+                      <td className="p-4 font-medium">{rs.ChuHo}</td>
+                      <td className="p-4 text-sm">{rs.NgayRaSoat}</td>
+                      <td className="p-4">{getPhanLoaiBadge(rs.KetQuaDanhGia)}</td>
+                      <td className="p-4 text-right font-semibold">{rs.DiemTong}</td>
+                      <td className="p-4">
+                        <div className="flex flex-wrap gap-1">
+                          {rs.TieuChiThieuHut.map((tc, i) => (
+                            <Badge key={i} variant="outline" className="text-xs">{tc}</Badge>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="chinh-sach" className="space-y-4">
+          <Card className="p-6 border-0 shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Chính sách đang hưởng</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b">
+                  <tr>
+                    <th className="text-left p-4 font-semibold">Mã</th>
+                    <th className="text-left p-4 font-semibold">Chủ hộ</th>
+                    <th className="text-left p-4 font-semibold">Tên chính sách</th>
+                    <th className="text-right p-4 font-semibold">Mức hỗ trợ</th>
+                    <th className="text-left p-4 font-semibold">Thời gian</th>
+                    <th className="text-left p-4 font-semibold">Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mockChinhSachHoNgheo.map((cs) => (
+                    <tr key={cs.HuongID} className="border-b hover:bg-slate-50 transition-colors">
+                      <td className="p-4">
+                        <span className="font-semibold text-primary">CS-{String(cs.HuongID).padStart(3, '0')}</span>
+                      </td>
+                      <td className="p-4 font-medium">{cs.ChuHo}</td>
+                      <td className="p-4">{cs.TenChinhSach}</td>
+                      <td className="p-4 text-right font-semibold">
+                        {cs.SoTien > 0 ? cs.SoTien.toLocaleString('vi-VN') + 'đ' : 'Miễn phí'}
+                      </td>
+                      <td className="p-4 text-sm">{cs.ThoiGianHuong}</td>
+                      <td className="p-4">
+                        {cs.TrangThai === 'Đang hưởng' ? (
+                          <Badge className="bg-green-500/10 text-green-700 border-0">
+                            <CheckCircle2 className="w-3 h-3 mr-1" />{cs.TrangThai}
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-amber-500/10 text-amber-700 border-0">
+                            <Clock className="w-3 h-3 mr-1" />{cs.TrangThai}
+                          </Badge>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* View Dialog */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Chi tiết hộ gia đình</DialogTitle>
+            <DialogDescription>
+              HN-{String(selectedItem?.MaHo).padStart(3, '0')}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedItem && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">Chủ hộ</p>
+                  <p className="font-medium">{selectedItem.ChuHo}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Số nhân khẩu</p>
+                  <p className="font-medium">{selectedItem.SoNhanKhau} người</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-muted-foreground">Địa chỉ</p>
+                  <p className="font-medium">{selectedItem.DiaChi}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Phân loại</p>
+                  {getPhanLoaiBadge(selectedItem.PhanLoai)}
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Trạng thái</p>
+                  {getStatusBadge(selectedItem.TrangThai)}
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Thu nhập bình quân</p>
+                  <p className="font-medium">{selectedItem.ThuNhapBinhQuan?.toLocaleString('vi-VN')}đ/người/tháng</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Năm xác nhận</p>
+                  <p className="font-medium">{selectedItem.NamXacNhan}</p>
+                </div>
+              </div>
+              {selectedItem.GhiChu && (
+                <div className="pt-4 border-t">
+                  <p className="text-sm text-muted-foreground">Ghi chú</p>
+                  <p className="text-sm">{selectedItem.GhiChu}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }

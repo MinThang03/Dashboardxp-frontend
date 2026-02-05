@@ -73,7 +73,7 @@ export default function MoiTruongPage() {
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-green-500 to-teal-500 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-status-success via-status-success to-secondary p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
@@ -106,8 +106,8 @@ export default function MoiTruongPage() {
           <div className={`absolute inset-0 bg-gradient-to-br ${aqiColor} opacity-10`}></div>
           <div className="relative">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl">
-                <Wind className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-gradient-to-br from-secondary/20 to-secondary/20 rounded-xl">
+                <Wind className="w-6 h-6 text-secondary" />
               </div>
               <Badge
                 className={`bg-gradient-to-r ${aqiColor} text-white border-0`}

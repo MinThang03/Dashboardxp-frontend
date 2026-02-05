@@ -85,7 +85,7 @@ const services = [
     fee: 'Miễn phí',
     department: 'Tư pháp - Hộ tịch',
     icon: FileText,
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-primary to-primary',
     popular: true,
   },
   {
@@ -95,7 +95,7 @@ const services = [
     fee: 'Miễn phí',
     department: 'Tư pháp - Hộ tịch',
     icon: Building2,
-    color: 'from-green-500 to-emerald-500',
+    color: 'from-status-success to-status-success',
     popular: true,
   },
   {
@@ -105,7 +105,7 @@ const services = [
     fee: '500,000 đ',
     department: 'Địa chính - Xây dựng',
     icon: Building2,
-    color: 'from-orange-500 to-amber-500',
+    color: 'from-status-warning to-status-warning',
     popular: false,
   },
   {
@@ -115,7 +115,7 @@ const services = [
     fee: '200,000 đ',
     department: 'Địa chính - Xây dựng',
     icon: MapPin,
-    color: 'from-purple-500 to-pink-500',
+    color: 'from-accent to-accent',
     popular: false,
   },
 ];
@@ -153,7 +153,7 @@ export function CitizenDashboardPremium() {
   return (
     <div className="space-y-6 p-6">
       {/* Premium Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary to-secondary p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -177,10 +177,10 @@ export function CitizenDashboardPremium() {
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/5"></div>
-          <div className="relative p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-blue-500/10 rounded-xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5"></div>
+          <div className="relative">
+            <div className="flex items-start justify-between mb-4">
+              <div className="p-3 bg-primary/20 rounded-xl">
                 <FileText className="w-6 h-6 text-blue-600" />
               </div>
               <Badge className="bg-blue-500/10 text-blue-700 border-0">Tổng số</Badge>
@@ -191,7 +191,7 @@ export function CitizenDashboardPremium() {
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-amber-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-status-warning/10 to-status-warning/5"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-orange-500/10 rounded-xl">
@@ -205,7 +205,7 @@ export function CitizenDashboardPremium() {
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-status-success/10 to-status-success/5"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-green-500/10 rounded-xl">
@@ -490,7 +490,7 @@ export function CitizenDashboardPremium() {
               </div>
             </div>
 
-            <Button className="w-full h-12 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
+            <Button className="w-full h-12 bg-gradient-to-r from-primary to-primary hover:from-primary/90 hover:to-primary/90">
               <Send className="w-4 h-4 mr-2" />
               Gửi phản ánh
             </Button>

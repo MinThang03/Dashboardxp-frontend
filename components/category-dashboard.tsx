@@ -42,10 +42,10 @@ interface CategoryDashboardProps {
 const SAMPLE_DATA = {
   'hanh-chinh-tu-phap': {
     stats: [
-      { label: 'Hồ sơ xử lý', value: 245, change: '+12%', icon: FileText, color: 'text-blue-600' },
-      { label: 'Hoàn thành', value: 198, change: '+8%', icon: CheckCircle2, color: 'text-green-600' },
-      { label: 'Đang xử lý', value: 34, change: '-5%', icon: Clock, color: 'text-amber-600' },
-      { label: 'Quá hạn', value: 13, change: '-15%', icon: AlertCircle, color: 'text-red-600' },
+      { label: 'Hồ sơ xử lý', value: 245, change: '+12%', icon: FileText, color: 'text-primary' },
+      { label: 'Hoàn thành', value: 198, change: '+8%', icon: CheckCircle2, color: 'text-status-success' },
+      { label: 'Đang xử lý', value: 34, change: '-5%', icon: Clock, color: 'text-status-warning' },
+      { label: 'Quá hạn', value: 13, change: '-15%', icon: AlertCircle, color: 'text-status-danger' },
     ],
     chartData: [
       { month: 'T1', hoSo: 185, hoanThanh: 156, quaHan: 8 },
@@ -53,18 +53,18 @@ const SAMPLE_DATA = {
       { month: 'T3', hoSo: 245, hoanThanh: 198, quaHan: 13 },
     ],
     pieData: [
-      { name: 'Hộ tịch', value: 450, color: '#3b82f6' },
-      { name: 'Chứng thực', value: 320, color: '#10b981' },
-      { name: 'Hộ khẩu', value: 280, color: '#f59e0b' },
-      { name: 'Văn bản', value: 150, color: '#ef4444' },
+      { name: 'Hộ tịch', value: 450, color: '#DA291C' },
+      { name: 'Chứng thực', value: 320, color: '#003F88' },
+      { name: 'Hộ khẩu', value: 280, color: '#FFD700' },
+      { name: 'Văn bản', value: 150, color: '#16a34a' },
     ],
   },
   'y-te-giao-duc': {
     stats: [
-      { label: 'Học sinh', value: 2845, change: '+3%', icon: Users, color: 'text-blue-600' },
-      { label: 'Tỷ lệ đi học', value: '98.5%', change: '+1.2%', icon: CheckCircle2, color: 'text-green-600' },
-      { label: 'Khám bệnh/ngày', value: 145, change: '+5%', icon: FileText, color: 'text-purple-600' },
-      { label: 'Tiêm chủng', value: '95%', change: '+2%', icon: TrendingUp, color: 'text-green-600' },
+      { label: 'Học sinh', value: 2845, change: '+3%', icon: Users, color: 'text-secondary' },
+      { label: 'Tỷ lệ đi học', value: '98.5%', change: '+1.2%', icon: CheckCircle2, color: 'text-status-success' },
+      { label: 'Khám bệnh/ngày', value: 145, change: '+5%', icon: FileText, color: 'text-primary' },
+      { label: 'Tiêm chủng', value: '95%', change: '+2%', icon: TrendingUp, color: 'text-status-success' },
     ],
     chartData: [
       { month: 'T1', hocSinh: 2805, khamBenh: 4120, tiemChung: 450 },
@@ -72,16 +72,16 @@ const SAMPLE_DATA = {
       { month: 'T3', hocSinh: 2845, khamBenh: 4480, tiemChung: 580 },
     ],
     pieData: [
-      { name: 'Y tế', value: 680, color: '#ef4444' },
-      { name: 'Giáo dục', value: 520, color: '#3b82f6' },
+      { name: 'Y tế', value: 680, color: '#DA291C' },
+      { name: 'Giáo dục', value: 520, color: '#003F88' },
     ],
   },
   'kinh-te-thuong-mai': {
     stats: [
-      { label: 'Hộ kinh doanh', value: 356, change: '+8%', icon: Users, color: 'text-green-600' },
-      { label: 'Doanh thu/tháng', value: '450M', change: '+12%', icon: TrendingUp, color: 'text-green-600' },
-      { label: 'Thu phí', value: '45.8M', change: '+5%', icon: FileText, color: 'text-amber-600' },
-      { label: 'Tăng trưởng', value: '+15%', change: '+3%', icon: BarChart3, color: 'text-green-600' },
+      { label: 'Hộ kinh doanh', value: 356, change: '+8%', icon: Users, color: 'text-status-success' },
+      { label: 'Doanh thu/tháng', value: '450M', change: '+12%', icon: TrendingUp, color: 'text-status-success' },
+      { label: 'Thu phí', value: '45.8M', change: '+5%', icon: FileText, color: 'text-status-warning' },
+      { label: 'Tăng trưởng', value: '+15%', change: '+3%', icon: BarChart3, color: 'text-status-success' },
     ],
     chartData: [
       { month: 'T1', doanhThu: 380, thuPhi: 38, hoKD: 320 },
@@ -89,9 +89,9 @@ const SAMPLE_DATA = {
       { month: 'T3', doanhThu: 450, thuPhi: 45, hoKD: 356 },
     ],
     pieData: [
-      { name: 'Chợ', value: 245, color: '#10b981' },
-      { name: 'Hộ KD', value: 356, color: '#3b82f6' },
-      { name: 'DN nhỏ', value: 89, color: '#f59e0b' },
+      { name: 'Chợ', value: 245, color: '#16a34a' },
+      { name: 'Hộ KD', value: 356, color: '#003F88' },
+      { name: 'DN nhỏ', value: 89, color: '#FFD700' },
     ],
   },
   'quoc-phong-an-ninh': {

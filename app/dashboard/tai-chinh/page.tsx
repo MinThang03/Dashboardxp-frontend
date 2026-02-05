@@ -67,7 +67,7 @@ export default function TaiChinhPage() {
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-emerald-500 to-teal-500 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-status-success via-secondary to-status-success p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">

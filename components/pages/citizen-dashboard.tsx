@@ -103,7 +103,7 @@ export function CitizenDashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-blue-500/10 to-blue-500/5 border-blue-500/20 p-6 hover:shadow-lg transition-all">
+        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 p-6 hover:shadow-lg transition-all">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-muted-foreground font-medium">Hồ sơ của tôi</p>
@@ -131,7 +131,7 @@ export function CitizenDashboard() {
           </div>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-500/10 to-green-500/5 border-green-500/20 p-6 hover:shadow-lg transition-all">
+        <Card className="bg-gradient-to-br from-status-success/10 to-status-success/5 border-status-success/20 p-6 hover:shadow-lg transition-all">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-muted-foreground font-medium">Hoàn thành</p>
@@ -195,10 +195,10 @@ export function CitizenDashboard() {
                     <Badge
                       className={
                         submission.status === 'completed'
-                          ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                          ? 'bg-status-success/20 text-status-success border-status-success/30'
                           : submission.status === 'in-progress'
-                            ? 'bg-blue-500/20 text-blue-400 border-blue-500/30'
-                            : 'bg-gray-500/20 text-gray-400 border-gray-500/30'
+                            ? 'bg-secondary/20 text-secondary border-secondary/30'
+                            : 'bg-muted text-muted-foreground border-border'
                       }
                     >
                       {submission.status === 'completed'
@@ -241,7 +241,7 @@ export function CitizenDashboard() {
                           key={i}
                           className={`w-4 h-4 ${
                             i < (submission as any).rating
-                              ? 'fill-yellow-500 text-yellow-500'
+                              ? 'fill-accent text-accent'
                               : 'text-muted-foreground'
                           }`}
                         />

@@ -8,71 +8,71 @@
    ============================================ */
 
 :root {
-  /* Core Colors - Modern & Professional */
-  --background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
-  --foreground: #1a202c;
+  /* Core Colors - Vietnamese Government Theme */
+  --background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
+  --foreground: #1e293b;
   --card: #ffffff;
-  --card-foreground: #1a202c;
+  --card-foreground: #1e293b;
   --popover: #ffffff;
-  --popover-foreground: #1a202c;
+  --popover-foreground: #1e293b;
   
-  /* Primary - Vibrant Teal with Gradient */
-  --primary: #00ADB5;
-  --primary-dark: #008891;
-  --primary-light: #34d5dd;
+  /* Primary - Vietnamese Red (Quốc kỳ) */
+  --primary: #DA291C;
+  --primary-dark: #B71C1C;
+  --primary-light: #E74C3C;
   --primary-foreground: #ffffff;
-  --primary-gradient: linear-gradient(135deg, #00ADB5 0%, #00d4ff 100%);
+  --primary-gradient: linear-gradient(135deg, #DA291C 0%, #B71C1C 100%);
   
-  /* Secondary */
-  --secondary: #393E46;
-  --secondary-foreground: #f7fafc;
+  /* Secondary - Navy Blue (Uy tín nhà nước) */
+  --secondary: #003F88;
+  --secondary-foreground: #ffffff;
   
   /* Accent & Muted */
-  --muted: #e2e8f0;
+  --muted: #f1f5f9;
   --muted-foreground: #64748b;
-  --accent: #7c3aed;
-  --accent-foreground: #ffffff;
+  --accent: #FFD700;
+  --accent-foreground: #1e293b;
   
   /* Semantic Colors */
-  --destructive: #ef4444;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --info: #3b82f6;
+  --success: #16a34a;
+  --warning: #ea580c;
+  --info: #0284c7;
   
   /* UI Elements */
   --border: #e2e8f0;
   --input: #f8fafc;
-  --ring: #00ADB5;
-  --radius: 0.75rem;
+  --ring: #DA291C;
+  --radius: 0.5rem;
   
-  /* Charts - Vibrant Palette */
-  --chart-1: #00ADB5;
-  --chart-2: #10b981;
-  --chart-3: #f59e0b;
-  --chart-4: #ef4444;
-  --chart-5: #8b5cf6;
-  --chart-6: #ec4899;
+  /* Charts - Vietnamese Government Palette */
+  --chart-1: #DA291C;
+  --chart-2: #003F88;
+  --chart-3: #FFD700;
+  --chart-4: #16a34a;
+  --chart-5: #0284c7;
+  --chart-6: #ea580c;
   
-  /* Sidebar - Modern Glass */
-  --sidebar: rgba(255, 255, 255, 0.95);
-  --sidebar-foreground: #1a202c;
-  --sidebar-primary: #00ADB5;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f8fafc;
-  --sidebar-accent-foreground: #1a202c;
-  --sidebar-border: rgba(226, 232, 240, 0.6);
-  --sidebar-ring: #00ADB5;
+  /* Sidebar - Professional Government Style */
+  --sidebar: #003F88;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #FFD700;
+  --sidebar-primary-foreground: #1e293b;
+  --sidebar-accent: #004AAD;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.15);
+  --sidebar-ring: #FFD700;
   
   /* Status Colors */
-  --status-success: #10b981;
-  --status-warning: #f59e0b;
-  --status-danger: #ef4444;
-  --status-info: #3b82f6;
+  --status-success: #16a34a;
+  --status-warning: #ea580c;
+  --status-danger: #dc2626;
+  --status-info: #0284c7;
   
   /* Glass & Shadow Effects */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(218, 41, 28, 0.15);
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -82,36 +82,36 @@
 
 
 .dark {
-  /* Dark Mode - Modern & Elegant */
-  --background: #0f1419;
-  --foreground: #e2e8f0;
-  --card: #1a1f2e;
-  --card-foreground: #e2e8f0;
-  --popover: #1a1f2e;
-  --popover-foreground: #e2e8f0;
-  --primary: #00d4ff;
-  --primary-dark: #00ADB5;
-  --primary-light: #5ce1e6;
-  --primary-foreground: #0f1419;
-  --secondary: #252d3a;
-  --secondary-foreground: #e2e8f0;
-  --muted: #1e293b;
+  /* Dark Mode - Vietnamese Government Dark Theme */
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --primary: #EF4444;
+  --primary-dark: #DC2626;
+  --primary-light: #F87171;
+  --primary-foreground: #ffffff;
+  --secondary: #1e40af;
+  --secondary-foreground: #ffffff;
+  --muted: #334155;
   --muted-foreground: #94a3b8;
-  --accent: #8b5cf6;
-  --accent-foreground: #ffffff;
-  --destructive: #f87171;
+  --accent: #FDE047;
+  --accent-foreground: #1e293b;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #334155;
   --input: #1e293b;
-  --ring: #00d4ff;
-  --sidebar: rgba(26, 31, 46, 0.95);
-  --sidebar-foreground: #e2e8f0;
-  --sidebar-primary: #00d4ff;
-  --sidebar-primary-foreground: #0f1419;
-  --sidebar-accent: #252d3a;
-  --sidebar-accent-foreground: #e2e8f0;
-  --sidebar-border: rgba(51, 65, 85, 0.6);
-  --glass-bg: rgba(26, 31, 46, 0.7);
+  --ring: #EF4444;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #FDE047;
+  --sidebar-primary-foreground: #1e293b;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f1f5f9;
+  --sidebar-border: rgba(148, 163, 184, 0.2);
+  --glass-bg: rgba(30, 41, 59, 0.85);
 }
 
 /* ============================================
@@ -299,41 +299,41 @@
    ============================================ */
 
 .gradient-primary {
-  background: linear-gradient(135deg, #00ADB5 0%, #00d4ff 100%);
+  background: linear-gradient(135deg, #DA291C 0%, #B71C1C 100%);
 }
 
 .gradient-secondary {
-  background: linear-gradient(135deg, #393E46 0%, #4a5568 100%);
+  background: linear-gradient(135deg, #003F88 0%, #002855 100%);
 }
 
 .gradient-success {
-  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
 }
 
 .gradient-warning {
-  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
 }
 
 .gradient-danger {
-  background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
 }
 
-.gradient-purple {
-  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+.gradient-gold {
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
 }
 
-.gradient-pink {
-  background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+.gradient-blue {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
 }
 
 .gradient-mesh {
   background: 
-    radial-gradient(at 40% 20%, rgba(0, 173, 181, 0.3) 0px, transparent 50%),
-    radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.3) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, rgba(16, 185, 129, 0.3) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, rgba(236, 72, 153, 0.3) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
-    radial-gradient(at 80% 100%, rgba(245, 158, 11, 0.3) 0px, transparent 50%);
+    radial-gradient(at 40% 20%, rgba(218, 41, 28, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(0, 63, 136, 0.15) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(255, 215, 0, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(22, 163, 74, 0.15) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(234, 88, 12, 0.15) 0px, transparent 50%);
 }
 
 /* ============================================
@@ -355,8 +355,8 @@
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(0, 173, 181, 0.5),
-              0 0 40px rgba(0, 173, 181, 0.3);
+  box-shadow: 0 0 20px rgba(218, 41, 28, 0.4),
+              0 0 40px rgba(218, 41, 28, 0.2);
 }
 
 .hover-scale {
@@ -394,10 +394,10 @@
 
 .card-gradient {
   background: linear-gradient(135deg, 
-    rgba(0, 173, 181, 0.1) 0%, 
-    rgba(0, 212, 255, 0.1) 100%
+    rgba(218, 41, 28, 0.05) 0%, 
+    rgba(0, 63, 136, 0.05) 100%
   );
-  border: 1px solid rgba(0, 173, 181, 0.2);
+  border: 1px solid rgba(218, 41, 28, 0.15);
 }
 
 /* ============================================
@@ -405,7 +405,7 @@
    ============================================ */
 
 .text-gradient {
-  background: linear-gradient(135deg, #00ADB5 0%, #00d4ff 100%);
+  background: linear-gradient(135deg, #DA291C 0%, #B71C1C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -414,9 +414,9 @@
 .text-shine {
   background: linear-gradient(
     90deg,
-    #00ADB5 0%,
-    #00d4ff 50%,
-    #00ADB5 100%
+    #DA291C 0%,
+    #FFD700 50%,
+    #DA291C 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;

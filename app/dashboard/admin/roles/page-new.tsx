@@ -71,10 +71,10 @@ const mockRoles = [
 ];
 
 const colorClasses: Record<string, string> = {
-  red: 'bg-red-500/20 text-red-400 border-red-500/30',
-  purple: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-  blue: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-  green: 'bg-green-500/20 text-green-400 border-green-500/30',
+  red: 'bg-status-danger/20 text-status-danger border-status-danger/30',
+  purple: 'bg-secondary/20 text-secondary border-secondary/30',
+  blue: 'bg-primary/20 text-primary border-primary/30',
+  green: 'bg-status-success/20 text-status-success border-status-success/30',
 };
 
 export default function RolesPage() {

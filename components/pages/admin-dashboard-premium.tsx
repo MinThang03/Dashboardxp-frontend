@@ -95,9 +95,9 @@ const mockUsers: User[] = [
 ];
 
 const roleConfig = {
-  admin: { label: 'Quản trị viên', color: 'from-purple-500 to-pink-500', icon: Shield },
-  leader: { label: 'Lãnh đạo', color: 'from-blue-500 to-cyan-500', icon: Users },
-  officer: { label: 'Cán bộ', color: 'from-green-500 to-emerald-500', icon: UserCheck },
+  admin: { label: 'Quản trị viên', color: 'from-primary to-primary', icon: Shield },
+  leader: { label: 'Lãnh đạo', color: 'from-secondary to-secondary', icon: Users },
+  officer: { label: 'Cán bộ', color: 'from-status-success to-status-success', icon: UserCheck },
   citizen: { label: 'Công dân', color: 'from-orange-500 to-amber-500', icon: Users },
 };
 
@@ -141,7 +141,7 @@ export function AdminDashboardPremium() {
   return (
     <div className="space-y-6 p-6">
       {/* Premium Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-600 via-pink-500 to-rose-600 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-secondary to-primary p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -171,7 +171,7 @@ export function AdminDashboardPremium() {
       {/* System Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-secondary/5"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-blue-500/10 rounded-xl">
@@ -189,7 +189,7 @@ export function AdminDashboardPremium() {
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-emerald-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-status-success/10 to-status-success/5"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-green-500/10 rounded-xl">
@@ -206,7 +206,7 @@ export function AdminDashboardPremium() {
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-purple-500/10 rounded-xl">
@@ -224,7 +224,7 @@ export function AdminDashboardPremium() {
         </Card>
 
         <Card className="relative overflow-hidden border-0 shadow-lg">
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-yellow-500/5"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-accent/5"></div>
           <div className="relative p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-amber-500/10 rounded-xl">

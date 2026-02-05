@@ -15,7 +15,7 @@ export default function MotCuaPage() {
 
   return (
     <div className="space-y-6 p-6">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-500 to-teal-500 p-8 text-white">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-secondary via-primary to-secondary p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">

@@ -68,17 +68,17 @@ const navigationItems: MenuItem[] = [
     icon: <LayoutDashboard className="w-5 h-5" />,
     roles: ['admin', 'leader', 'officer', 'citizen'],
   },
-  // Leader menu
+  // Leader menu - Quản lý 10 lĩnh vực
   {
-    label: 'KPI & Giám sát',
-    href: '/dashboard/kpi',
-    icon: <TrendingUp className="w-5 h-5" />,
+    label: 'Giám sát 10 Lĩnh vực',
+    href: '/dashboard/giam-sat-linh-vuc',
+    icon: <BarChart3 className="w-5 h-5" />,
     roles: ['leader'],
   },
   {
-    label: 'Ngân sách',
-    href: '/dashboard/budget',
-    icon: <BarChart3 className="w-5 h-5" />,
+    label: 'Phê duyệt & Ký số',
+    href: '/dashboard/approvals',
+    icon: <CheckCircle2 className="w-5 h-5" />,
     roles: ['leader'],
   },
   {
@@ -88,9 +88,9 @@ const navigationItems: MenuItem[] = [
     roles: ['leader'],
   },
   {
-    label: 'Phê duyệt & Ký số',
-    href: '/dashboard/approvals',
-    icon: <CheckCircle2 className="w-5 h-5" />,
+    label: 'Báo cáo & Phân tích',
+    href: '/dashboard/reports',
+    icon: <FileText className="w-5 h-5" />,
     roles: ['leader'],
   },
   // Officer menu - Hành chính tư pháp
@@ -169,13 +169,6 @@ const navigationItems: MenuItem[] = [
     href: '/dashboard/admin/settings',
     icon: <Settings className="w-5 h-5" />,
     roles: ['admin'],
-  },
-  // Common menu
-  {
-    label: 'Báo cáo & Phân tích',
-    href: '/dashboard/reports',
-    icon: <BarChart3 className="w-5 h-5" />,
-    roles: ['leader'],
   },
 ];
 
