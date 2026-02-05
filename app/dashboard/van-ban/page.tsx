@@ -103,7 +103,7 @@ export default function VanBanPage() {
 
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 max-w-7xl space-y-4 sm:space-y-6">
+    <div className="space-y-6 p-6">
       {/* Header */}
       <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-secondary via-primary to-secondary p-6 sm:p-8 text-white">
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
@@ -174,8 +174,8 @@ export default function VanBanPage() {
       </div>
 
       {/* Search & Filter */}
-      <Card className="p-4 border-0 shadow-lg">
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+      <Card className="p-3 sm:p-4 md:p-6 border-0 shadow-lg">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
             <Input
@@ -215,8 +215,8 @@ export default function VanBanPage() {
 
       {/* Table */}
       <Card className="border-0 shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="overflow-x-auto -mx-3 sm:-mx-4 md:-mx-6 px-3 sm:px-4 md:px-6">
+          <table className="w-full min-w-max">
             <thead className="bg-slate-50 border-b">
               <tr>
                 <th className="text-left p-3 sm:p-4 text-xs sm:text-sm font-semibold">Số ký hiệu</th>
@@ -236,12 +236,12 @@ export default function VanBanPage() {
                       <FileText className="w-4 h-4 text-secondary flex-shrink-0" />
                       <div className="min-w-0">
                         <span className="font-semibold text-xs sm:text-sm text-primary">{item.SoKyHieu}</span>
-                        <p className="text-xs text-muted-foreground md:hidden truncate">{item.TrichYeu}</p>
+                        <p className="text-xs text-muted-foreground md:hidden truncate" title={item.TrichYeu}>{item.TrichYeu.length > 15 ? item.TrichYeu.substring(0, 15) + '...' : item.TrichYeu}</p>
                       </div>
                     </div>
                   </td>
                   <td className="p-3 sm:p-4 hidden md:table-cell">
-                    <p className="max-w-xs sm:max-w-md truncate text-xs sm:text-sm">{item.TrichYeu}</p>
+                    <p className="max-w-xs sm:max-w-md truncate text-xs sm:text-sm" title={item.TrichYeu}>{item.TrichYeu.length > 15 ? item.TrichYeu.substring(0, 15) + '...' : item.TrichYeu}</p>
                   </td>
                   <td className="p-3 sm:p-4 hidden sm:table-cell">
                     <Badge className={item.LoaiVanBan === 'Đến' ? 'bg-status-danger/10 text-status-danger border-0 text-xs' : 'bg-status-success/10 text-status-success border-0 text-xs'}>
@@ -307,9 +307,9 @@ export default function VanBanPage() {
 
       {/* View Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        <DialogContent className="w-[95vw] sm:w-full max-w-2xl sm:max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-lg sm:text-xl">Chi tiết văn bản</DialogTitle>
+        <DialogContent className="w-[95vw] max-w-sm sm:max-w-2xl md:max-w-3xl h-[85vh] sm:h-auto sm:max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-base sm:text-lg md:text-xl">Chi tiết văn bản</DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">Thông tin chi tiết văn bản</DialogDescription>
           </DialogHeader>
           {selectedItem && (
@@ -398,13 +398,13 @@ export default function VanBanPage() {
 
       {/* Edit Dialog */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="w-[95vw] sm:w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-lg sm:text-xl">Chỉnh sửa văn bản</DialogTitle>
+        <DialogContent className="w-[95vw] max-w-sm sm:max-w-2xl md:max-w-3xl h-[85vh] sm:h-auto sm:max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-base sm:text-lg md:text-xl">Chỉnh sửa văn bản</DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">Cập nhật thông tin văn bản</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 sm:space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="space-y-2 sm:space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               <div>
                 <Label htmlFor="SoKyHieu">Số ký hiệu <span className="text-status-danger">*</span></Label>
                 <Input
@@ -526,13 +526,13 @@ export default function VanBanPage() {
 
       {/* Add Dialog */}
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Thêm văn bản mới</DialogTitle>
-            <DialogDescription>Nhập thông tin văn bản mới</DialogDescription>
+        <DialogContent className="w-[95vw] max-w-sm sm:max-w-2xl md:max-w-3xl h-[85vh] sm:h-auto sm:max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-base sm:text-lg md:text-xl">Thêm văn bản mới</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">Nhập thông tin văn bản mới</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2 sm:space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               <div>
                 <Label htmlFor="add_SoKyHieu">Số ký hiệu <span className="text-red-500">*</span></Label>
                 <Input

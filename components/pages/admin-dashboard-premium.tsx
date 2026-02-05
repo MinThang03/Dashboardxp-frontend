@@ -4,6 +4,22 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { useState } from 'react';
 import {
   Search,
@@ -25,6 +41,7 @@ import {
   UserX,
   Clock,
   Zap,
+  X,
 } from 'lucide-react';
 import {
   BarChart,
@@ -129,8 +146,34 @@ export function AdminDashboardPremium() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterRole, setFilterRole] = useState<string>('all');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    role: 'officer' as const,
+    department: '',
+  });
 
-  const filteredUsers = mockUsers.filter((user) => {
+  const handleAddUser = () => {
+    if (formData.name && formData.email && formData.role) {
+      const newUser: User = {
+        id: users.length + 1,
+        name: formData.name,
+        email: formData.email,
+        role: formData.role,
+        department: formData.department,
+        status: 'active',
+        lastLogin: 'Chưa đăng nhập',
+      };
+      setUsers([...users, newUser]);
+      setFormData({ name: '', email: '', role: 'officer', department: '' });
+      setDialogOpen(false);
+      console.log('Added new user:', newUser);
+    }
+  };
+
+  const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -155,7 +198,7 @@ export function AdminDashboardPremium() {
               <p className="text-white/90 text-lg">Quản lý hệ thống và người dùng</p>
             </div>
             <div className="flex gap-3">
-              <Button className="bg-white text-purple-600 hover:bg-white/90">
+              <Button className="bg-white text-purple-600 hover:bg-white/90" onClick={() => setDialogOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Thêm người dùng
               </Button>
@@ -441,6 +484,76 @@ export function AdminDashboardPremium() {
           ))}
         </div>
       </Card>
+
+      {/* Add User Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Thêm người dùng mới</DialogTitle>
+            <DialogDescription>
+              Nhập thông tin người dùng từ cơ sở dữ liệu
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Họ và tên *</Label>
+              <Input
+                id="name"
+                placeholder="Nhập họ tên"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email *</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="user@ubnd.vn"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="role">Vai trò *</Label>
+              <Select value={formData.role} onValueChange={(v: any) => setFormData({ ...formData, role: v })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Quản trị viên</SelectItem>
+                  <SelectItem value="leader">Lãnh đạo</SelectItem>
+                  <SelectItem value="officer">Cán bộ</SelectItem>
+                  <SelectItem value="citizen">Công dân</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="department">Phòng ban/Lĩnh vực</Label>
+              <Input
+                id="department"
+                placeholder="Ví dụ: Tư pháp - Hộ tịch"
+                value={formData.department}
+                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleAddUser}>
+              <Plus className="w-4 h-4 mr-2" />
+              Thêm người dùng
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

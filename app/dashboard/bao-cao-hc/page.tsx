@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Dialog,
   DialogContent,
@@ -36,6 +38,14 @@ export default function BaoCaoHCPage() {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    TenBaoCao: '',
+    LoaiBaoCao: 'Báo cáo tháng',
+    KyBaoCao: '',
+    NgayLap: new Date().toISOString().split('T')[0],
+    NguoiLap: '',
+    SoLieuThongKe: {},
+  });
 
   // Tính toán thống kê từ dữ liệu thực
   const stats = {
@@ -78,6 +88,20 @@ export default function BaoCaoHCPage() {
 
   const handleAdd = () => {
     setIsAddOpen(true);
+  };
+
+  const handleSave = () => {
+    console.log('Saving new report:', formData);
+    // TODO: Gửi dữ liệu lên server
+    setIsAddOpen(false);
+    setFormData({
+      TenBaoCao: '',
+      LoaiBaoCao: 'Báo cáo tháng',
+      KyBaoCao: '',
+      NgayLap: new Date().toISOString().split('T')[0],
+      NguoiLap: '',
+      SoLieuThongKe: {},
+    });
   };
 
   const handleFilter = () => {
@@ -315,6 +339,106 @@ export default function BaoCaoHCPage() {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Dialog */}
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent className="w-[95vw] max-w-sm sm:max-w-2xl md:max-w-3xl h-[85vh] sm:h-auto sm:max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle>Tạo báo cáo hành chính</DialogTitle>
+            <DialogDescription>
+              Nhập thông tin chi tiết cho báo cáo mới
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-2 sm:space-y-3">
+            {/* Tên báo cáo */}
+            <div>
+              <label className="text-sm font-medium">Tên báo cáo</label>
+              <Input
+                placeholder="Nhập tên báo cáo"
+                value={formData.TenBaoCao}
+                onChange={(e) => setFormData({ ...formData, TenBaoCao: e.target.value })}
+                className="h-11 px-4 mt-1"
+              />
+            </div>
+
+            {/* Loại báo cáo và Kỳ báo cáo */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+              <div>
+                <label className="text-sm font-medium">Loại báo cáo</label>
+                <Select value={formData.LoaiBaoCao} onValueChange={(value) => setFormData({ ...formData, LoaiBaoCao: value })}>
+                  <SelectTrigger className="h-11 px-4 mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Báo cáo tháng">Báo cáo tháng</SelectItem>
+                    <SelectItem value="Báo cáo quý">Báo cáo quý</SelectItem>
+                    <SelectItem value="Báo cáo năm">Báo cáo năm</SelectItem>
+                    <SelectItem value="Báo cáo tuần">Báo cáo tuần</SelectItem>
+                    <SelectItem value="Báo cáo định kỳ">Báo cáo định kỳ</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Kỳ báo cáo</label>
+                <Input
+                  placeholder="Ví dụ: Tháng 1/2026"
+                  value={formData.KyBaoCao}
+                  onChange={(e) => setFormData({ ...formData, KyBaoCao: e.target.value })}
+                  className="h-11 px-4 mt-1"
+                />
+              </div>
+            </div>
+
+            {/* Ngày lập và Người lập */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+              <div>
+                <label className="text-sm font-medium">Ngày lập</label>
+                <Input
+                  type="date"
+                  value={formData.NgayLap}
+                  onChange={(e) => setFormData({ ...formData, NgayLap: e.target.value })}
+                  className="h-11 px-4 mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Người lập</label>
+                <Input
+                  placeholder="Nhập tên người lập"
+                  value={formData.NguoiLap}
+                  onChange={(e) => setFormData({ ...formData, NguoiLap: e.target.value })}
+                  className="h-11 px-4 mt-1"
+                />
+              </div>
+            </div>
+
+            {/* Ghi chú */}
+            <div>
+              <label className="text-sm font-medium">Ghi chú</label>
+              <Textarea
+                placeholder="Nhập ghi chú thêm..."
+                className="mt-1 min-h-20 resize-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setIsAddOpen(false)}
+            >
+              Hủy
+            </Button>
+            <Button
+              className="bg-primary hover:bg-primary/90"
+              onClick={handleSave}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Tạo báo cáo
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

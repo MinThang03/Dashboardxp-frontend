@@ -159,6 +159,12 @@ const navigationItems: MenuItem[] = [
     roles: ['admin'],
   },
   {
+    label: 'Thông tin Xã Phường',
+    href: '/dashboard/admin/commune',
+    icon: <MapPin className="w-5 h-5" />,
+    roles: ['admin'],
+  },
+  {
     label: 'Quyền & Vai trò',
     href: '/dashboard/admin/roles',
     icon: <Shield className="w-5 h-5" />,
