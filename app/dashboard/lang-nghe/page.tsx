@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { langNgheApi } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -196,6 +197,9 @@ export default function LangNghePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [data, setData] = useState<LangNghe[]>([]);
+  const [stats, setStats] = useState({ total: 0, hoatDong: 0, totalHoNghe: 0 });
+  const [loading, setLoading] = useState(true);
   
   // Dialog states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -221,8 +225,39 @@ export default function LangNghePage() {
     GhiChu: '',
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [listRes, statsRes] = await Promise.all([
+        langNgheApi.getList({ page: 1, limit: 100 }),
+        langNgheApi.getStats()
+      ]);
+      if (listRes.success && listRes.data) {
+        setData(listRes.data as any);
+      }
+      if (statsRes.success && statsRes.data) {
+        setStats(statsRes.data as any);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Statistics
+  const tongLangNghe = stats.total;
+  const hoatDong = stats.hoatDong;
+  const tongHoNghe = stats.totalHoNghe;
+  const tongLaoDong = data.reduce((sum, item) => sum + (item.SoLaoDong || 0), 0);
+  const tongDoanhThu = data.reduce((sum, item) => sum + (item.DoanhThuNam || 0), 0);
+
   // Filter data
-  const filteredData = mockLangNghe.filter((item) => {
+  const filteredData = data.filter((item) => {
     const matchSearch = 
       item.MaLN.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.TenLangNghe.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -234,15 +269,6 @@ export default function LangNghePage() {
     return matchSearch && matchType && matchStatus;
   });
 
-  // Stats
-  const stats = {
-    total: mockLangNghe.length,
-    totalHo: mockLangNghe.reduce((sum, l) => sum + l.SoHoNghe, 0),
-    totalNgheNhan: mockLangNghe.reduce((sum, l) => sum + l.SoNgheNhan, 0),
-    totalLabor: mockLangNghe.reduce((sum, l) => sum + l.SoLaoDong, 0),
-    totalRevenue: mockLangNghe.reduce((sum, l) => sum + l.DoanhThuNam, 0),
-    developing: mockLangNghe.filter(l => l.TrangThai === 'Phát triển').length,
-  };
 
   // Handlers
   const handleView = (record: LangNghe) => {

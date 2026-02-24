@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { coSoGiaoDucApi } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -184,6 +185,9 @@ export default function CoSoGiaoDucPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [data, setData] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({});
+  const [loading, setLoading] = useState(true);
   
   // Dialog states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -213,27 +217,48 @@ export default function CoSoGiaoDucPage() {
     GhiChu: '',
   });
 
+  // Fetch data
+  useEffect(() => {
+    fetchData();
+    fetchStats();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await coSoGiaoDucApi.getList();
+      if (response.success && response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await coSoGiaoDucApi.getStats();
+      if (response.success && response.data) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
   // Filter data
-  const filteredData = mockCoSoGD.filter((item) => {
+  const filteredData = data.filter((item) => {
     const matchSearch = 
-      item.MaTruong.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.TenTruong.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.HieuTruong.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.TenCoSo || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.DiaChi || '').toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchType = typeFilter === 'all' || item.LoaiTruong === typeFilter;
-    const matchStatus = statusFilter === 'all' || item.TinhTrangCoSo === statusFilter;
+    const matchType = typeFilter === 'all' || item.LoaiHinh === typeFilter;
+    const matchStatus = statusFilter === 'all' || (statusFilter === 'active' ? item.TrangThai : !item.TrangThai);
     
     return matchSearch && matchType && matchStatus;
   });
-
-  // Stats
-  const stats = {
-    total: mockCoSoGD.length,
-    totalRooms: mockCoSoGD.reduce((sum, t) => sum + t.SoPhongHoc, 0),
-    totalStudents: mockCoSoGD.reduce((sum, t) => sum + t.SoHocSinh, 0),
-    totalTeachers: mockCoSoGD.reduce((sum, t) => sum + t.SoGiaoVien, 0),
-    standard: mockCoSoGD.filter(t => t.DatChuan).length,
-  };
 
   // Handlers
   const handleView = (record: CoSoGD) => {
@@ -290,10 +315,40 @@ export default function CoSoGiaoDucPage() {
     setAddDialogOpen(true);
   };
 
-  const handleSave = () => {
-    console.log('Saving:', formData);
-    setEditDialogOpen(false);
-    setAddDialogOpen(false);
+  const handleSave = async () => {
+    try {
+      if (editDialogOpen && selectedRecord) {
+        const response = await coSoGiaoDucApi.update(selectedRecord.MaCoSo, formData);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setEditDialogOpen(false);
+        }
+      } else if (addDialogOpen) {
+        const response = await coSoGiaoDucApi.create(formData);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setAddDialogOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm('Bạn có chắc muốn xóa bản ghi này?')) {
+      try {
+        const response = await coSoGiaoDucApi.delete(id);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+        }
+      } catch (error) {
+        console.error('Error deleting:', error);
+      }
+    }
   };
 
   // Helper functions
@@ -348,25 +403,31 @@ export default function CoSoGiaoDucPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      ) : (
+        <>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
             <div className="p-3 bg-blue-500/10 rounded-xl">
               <School className="w-6 h-6 text-blue-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.total}</p>
+          <p className="text-3xl font-bold">{stats.total || 0}</p>
           <p className="text-sm text-muted-foreground">Cơ sở giáo dục</p>
         </Card>
 
         <Card className="p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-cyan-500/10 rounded-xl">
-              <Building2 className="w-6 h-6 text-cyan-600" />
+            <div className="p-3 bg-green-500/10 rounded-xl">
+              <CheckCircle2 className="w-6 h-6 text-green-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.totalRooms}</p>
-          <p className="text-sm text-muted-foreground">Phòng học</p>
+          <p className="text-3xl font-bold">{stats.hoatDong || 0}</p>
+          <p className="text-sm text-muted-foreground">Hoạt động</p>
         </Card>
 
         <Card className="p-6 border-0 shadow-lg hover-lift">
@@ -375,7 +436,7 @@ export default function CoSoGiaoDucPage() {
               <Users className="w-6 h-6 text-indigo-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.totalStudents.toLocaleString()}</p>
+          <p className="text-3xl font-bold">{(stats.totalHocSinh || 0).toLocaleString()}</p>
           <p className="text-sm text-muted-foreground">Học sinh</p>
         </Card>
 
@@ -385,18 +446,8 @@ export default function CoSoGiaoDucPage() {
               <GraduationCap className="w-6 h-6 text-purple-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.totalTeachers}</p>
+          <p className="text-3xl font-bold">{stats.totalGiaoVien || 0}</p>
           <p className="text-sm text-muted-foreground">Giáo viên</p>
-        </Card>
-
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-green-500/10 rounded-xl">
-              <CheckCircle2 className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-          <p className="text-3xl font-bold">{stats.standard}/{stats.total}</p>
-          <p className="text-sm text-muted-foreground">Đạt chuẩn QG</p>
         </Card>
       </div>
 
@@ -448,14 +499,13 @@ export default function CoSoGiaoDucPage() {
           <table className="w-full">
             <thead className="bg-slate-50 border-b">
               <tr>
-                <th className="text-left p-4 font-semibold">Mã trường</th>
-                <th className="text-left p-4 font-semibold">Tên trường</th>
-                <th className="text-left p-4 font-semibold">Loại</th>
-                <th className="text-left p-4 font-semibold">Phòng học</th>
+                <th className="text-left p-4 font-semibold">Mã cơ sở</th>
+                <th className="text-left p-4 font-semibold">Tên cơ sở</th>
+                <th className="text-left p-4 font-semibold">Loại hình</th>
+                <th className="text-left p-4 font-semibold">Địa chỉ</th>
                 <th className="text-left p-4 font-semibold">Học sinh</th>
                 <th className="text-left p-4 font-semibold">Giáo viên</th>
-                <th className="text-left p-4 font-semibold">Thiết bị</th>
-                <th className="text-left p-4 font-semibold">Tình trạng</th>
+                <th className="text-left p-4 font-semibold">Trạng thái</th>
                 <th className="text-right p-4 font-semibold">Thao tác</th>
               </tr>
             </thead>
@@ -463,31 +513,31 @@ export default function CoSoGiaoDucPage() {
               {filteredData.map((record) => (
                 <tr key={record.MaCoSo} className="border-b hover:bg-slate-50 transition-colors">
                   <td className="p-4">
-                    <span className="font-semibold text-primary">{record.MaTruong}</span>
+                    <span className="font-semibold text-primary">{record.MaCoSo}</span>
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      {getSchoolIcon(record.LoaiTruong)}
+                      {getSchoolIcon(record.LoaiHinh)}
                       <div>
-                        <div className="font-medium">{record.TenTruong}</div>
-                        <div className="text-xs text-muted-foreground">{record.DiaChi}</div>
+                        <div className="font-medium">{record.TenCoSo}</div>
                       </div>
                     </div>
                   </td>
                   <td className="p-4">
-                    <Badge variant="outline">{record.LoaiTruong}</Badge>
+                    <Badge variant="outline">{record.LoaiHinh}</Badge>
                   </td>
-                  <td className="p-4 font-semibold">{record.SoPhongHoc}</td>
+                  <td className="p-4">
+                    <div className="text-sm text-muted-foreground">{record.DiaChi}</div>
+                  </td>
                   <td className="p-4 font-semibold">{record.SoHocSinh}</td>
                   <td className="p-4">{record.SoGiaoVien}</td>
                   <td className="p-4">
-                    {record.TrangThietBi === 'Đầy đủ' ? (
-                      <Badge className="bg-green-500/10 text-green-700 border-0"><Laptop className="w-3 h-3 mr-1" />Đầy đủ</Badge>
+                    {record.TrangThai ? (
+                      <Badge className="bg-green-500/10 text-green-700 border-0"><CheckCircle2 className="w-3 h-3 mr-1" />Hoạt động</Badge>
                     ) : (
-                      <Badge className="bg-orange-500/10 text-orange-700 border-0"><AlertTriangle className="w-3 h-3 mr-1" />Thiếu</Badge>
+                      <Badge className="bg-gray-500/10 text-gray-700 border-0"><X className="w-3 h-3 mr-1" />Ngưng</Badge>
                     )}
                   </td>
-                  <td className="p-4">{getStatusBadge(record.TinhTrangCoSo)}</td>
                   <td className="p-4">
                     <div className="flex items-center justify-end gap-2">
                       <Button 
@@ -882,6 +932,8 @@ export default function CoSoGiaoDucPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </>
+      )}
     </div>
   );
 }

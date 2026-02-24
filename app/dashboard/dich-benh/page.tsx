@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { dichBenhApi } from '@/lib/api';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -208,6 +209,9 @@ export default function DichBenhPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [severityFilter, setSeverityFilter] = useState('all');
+  const [data, setData] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({});
+  const [loading, setLoading] = useState(true);
   
   // Dialog states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -239,27 +243,48 @@ export default function DichBenhPage() {
     GhiChu: '',
   });
 
+  // Fetch data
+  useEffect(() => {
+    fetchData();
+    fetchStats();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await dichBenhApi.getList();
+      if (response.success && response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await dichBenhApi.getStats();
+      if (response.success && response.data) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
   // Filter data
-  const filteredData = mockDichBenh.filter((item) => {
+  const filteredData = data.filter((item) => {
     const matchSearch = 
-      item.MaCa.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.TenBenhNhan.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.TenBenh.toLowerCase().includes(searchQuery.toLowerCase());
+      (item.TenDich || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (item.KhuVuc || '').toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchStatus = statusFilter === 'all' || item.TrangThaiDieuTri === statusFilter;
-    const matchSeverity = severityFilter === 'all' || item.MucDoBenh === severityFilter;
+    const matchStatus = statusFilter === 'all' || item.TrangThai === statusFilter;
+    const matchSeverity = severityFilter === 'all' || item.MucDo === severityFilter;
     
     return matchSearch && matchStatus && matchSeverity;
   });
-
-  // Stats
-  const stats = {
-    total: mockDichBenh.length,
-    treating: mockDichBenh.filter(t => t.TrangThaiDieuTri === 'Đang điều trị').length,
-    recovered: mockDichBenh.filter(t => t.TrangThaiDieuTri === 'Đã khỏi').length,
-    severe: mockDichBenh.filter(t => t.MucDoBenh === 'Nặng').length,
-    contacts: mockDichBenh.reduce((sum, t) => sum + t.NguoiTiepXuc, 0),
-  };
 
   // Handlers
   const handleView = (record: CaBenh) => {
@@ -321,21 +346,48 @@ export default function DichBenhPage() {
     setAddDialogOpen(true);
   };
 
-  const handleSave = () => {
-    console.log('Saving:', formData);
-    setEditDialogOpen(false);
-    setAddDialogOpen(false);
+  const handleSave = async () => {
+    try {
+      if (editDialogOpen && selectedRecord) {
+        const response = await dichBenhApi.update(selectedRecord.MaDich, formData);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setEditDialogOpen(false);
+        }
+      } else if (addDialogOpen) {
+        const response = await dichBenhApi.create(formData);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setAddDialogOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
+    }
   };
 
-  // Helper functions
+  const handleDelete = async (id: number) => {
+    if (confirm('Bạn có chắc muốn xóa bản ghi này?')) {
+      try {
+        const response = await dichBenhApi.delete(id);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+        }
+      } catch (error) {
+        console.error('Error deleting:', error);
+      }
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'Đang điều trị':
-        return <Badge className="bg-yellow-500/10 text-yellow-700 border-0"><Clock className="w-3 h-3 mr-1" />Đang điều trị</Badge>;
-      case 'Đã khỏi':
-        return <Badge className="bg-green-500/10 text-green-700 border-0"><CheckCircle2 className="w-3 h-3 mr-1" />Đã khỏi</Badge>;
-      case 'Tử vong':
-        return <Badge className="bg-gray-500/10 text-gray-700 border-0"><X className="w-3 h-3 mr-1" />Tử vong</Badge>;
+      case 'Đang theo dõi':
+        return <Badge className="bg-yellow-500/10 text-yellow-700 border-0"><Clock className="w-3 h-3 mr-1" />Đang theo dõi</Badge>;
+      case 'Hoàn thành':
+        return <Badge className="bg-green-500/10 text-green-700 border-0"><CheckCircle2 className="w-3 h-3 mr-1" />Hoàn thành</Badge>;
       default:
         return <Badge className="bg-gray-500/10 text-gray-700 border-0">{status}</Badge>;
     }
@@ -379,6 +431,12 @@ export default function DichBenhPage() {
       </div>
 
       {/* Stats */}
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      ) : (
+        <>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <Card className="p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
@@ -386,7 +444,7 @@ export default function DichBenhPage() {
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.total}</p>
+          <p className="text-3xl font-bold">{stats.total || 0}</p>
           <p className="text-sm text-muted-foreground">Tổng ca bệnh</p>
         </Card>
 
@@ -396,8 +454,8 @@ export default function DichBenhPage() {
               <Thermometer className="w-6 h-6 text-yellow-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.treating}</p>
-          <p className="text-sm text-muted-foreground">Đang điều trị</p>
+          <p className="text-3xl font-bold">{stats.dangTheoDoi || 0}</p>
+          <p className="text-sm text-muted-foreground">Đang theo dõi</p>
         </Card>
 
         <Card className="p-6 border-0 shadow-lg hover-lift">
@@ -406,8 +464,8 @@ export default function DichBenhPage() {
               <CheckCircle2 className="w-6 h-6 text-green-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.recovered}</p>
-          <p className="text-sm text-muted-foreground">Đã khỏi</p>
+          <p className="text-3xl font-bold">{stats.hoanThanh || 0}</p>
+          <p className="text-sm text-muted-foreground">Hoàn thành</p>
         </Card>
 
         <Card className="p-6 border-0 shadow-lg hover-lift">
@@ -416,8 +474,8 @@ export default function DichBenhPage() {
               <Activity className="w-6 h-6 text-orange-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.severe}</p>
-          <p className="text-sm text-muted-foreground">Ca nặng</p>
+          <p className="text-3xl font-bold">{stats.totalCaNhiem || 0}</p>
+          <p className="text-sm text-muted-foreground">Tổng ca nhiễm</p>
         </Card>
 
         <Card className="p-6 border-0 shadow-lg hover-lift">
@@ -426,8 +484,8 @@ export default function DichBenhPage() {
               <Shield className="w-6 h-6 text-blue-600" />
             </div>
           </div>
-          <p className="text-3xl font-bold">{stats.contacts}</p>
-          <p className="text-sm text-muted-foreground">Người tiếp xúc</p>
+          <p className="text-3xl font-bold">{stats.totalCaKhoi || 0}</p>
+          <p className="text-sm text-muted-foreground">Tổng ca khỏi</p>
         </Card>
       </div>
 
@@ -478,59 +536,53 @@ export default function DichBenhPage() {
           <table className="w-full">
             <thead className="bg-slate-50 border-b">
               <tr>
-                <th className="text-left p-4 font-semibold">Mã ca</th>
-                <th className="text-left p-4 font-semibold">Bệnh</th>
-                <th className="text-left p-4 font-semibold">Bệnh nhân</th>
-                <th className="text-left p-4 font-semibold">Ngày phát hiện</th>
+                <th className="text-left p-4 font-semibold">Mã dịch</th>
+                <th className="text-left p-4 font-semibold">Tên dịch</th>
                 <th className="text-left p-4 font-semibold">Khu vực</th>
+                <th className="text-left p-4 font-semibold">Ngày bắt đầu</th>
+                <th className="text-left p-4 font-semibold">Ngày kết thúc</th>
                 <th className="text-left p-4 font-semibold">Mức độ</th>
                 <th className="text-left p-4 font-semibold">Trạng thái</th>
-                <th className="text-left p-4 font-semibold">F1</th>
+                <th className="text-left p-4 font-semibold">Số ca nhiễm</th>
                 <th className="text-right p-4 font-semibold">Thao tác</th>
               </tr>
             </thead>
             <tbody>
               {filteredData.map((record) => (
-                <tr key={record.MaCaBenh} className="border-b hover:bg-slate-50 transition-colors">
+                <tr key={record.MaDich} className="border-b hover:bg-slate-50 transition-colors">
                   <td className="p-4">
-                    <span className="font-semibold text-primary">{record.MaCa}</span>
+                    <span className="font-semibold text-primary">{record.MaDich}</span>
                   </td>
                   <td className="p-4">
                     <div>
-                      <div className="font-medium">{record.TenBenh}</div>
-                      <div className="text-xs text-muted-foreground font-mono">{record.MaDonViBenh}</div>
+                      <div className="font-medium">{record.TenDich}</div>
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-muted-foreground" />
+                      <MapPin className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <div className="font-medium">{record.TenBenhNhan}</div>
-                        <div className="text-xs text-muted-foreground">
-                          {record.GioiTinh}, {new Date().getFullYear() - record.NamSinh} tuổi
-                        </div>
+                        <div className="font-medium">{record.KhuVuc}</div>
                       </div>
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2 text-sm">
                       <Calendar className="w-4 h-4 text-muted-foreground" />
-                      {formatDate(record.NgayPhatHien)}
+                      {formatDate(record.NgayBatDau)}
                     </div>
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="w-4 h-4 text-muted-foreground" />
-                      <span className="max-w-[120px] truncate" title={record.KhuVucPhatHien}>
-                        {record.KhuVucPhatHien}
-                      </span>
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      {record.NgayKetThuc ? formatDate(record.NgayKetThuc) : 'Đang diễn ra'}
                     </div>
                   </td>
-                  <td className="p-4">{getSeverityBadge(record.MucDoBenh)}</td>
-                  <td className="p-4">{getStatusBadge(record.TrangThaiDieuTri)}</td>
+                  <td className="p-4">{getSeverityBadge(record.MucDo)}</td>
+                  <td className="p-4">{getStatusBadge(record.TrangThai)}</td>
                   <td className="p-4">
                     <Badge variant="outline" className="font-semibold">
-                      {record.NguoiTiepXuc}
+                      {record.SoCaNhiem}
                     </Badge>
                   </td>
                   <td className="p-4">
@@ -574,10 +626,10 @@ export default function DichBenhPage() {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5" />
-              Chi tiết ca bệnh
+              Chi tiết dịch bệnh
             </DialogTitle>
             <DialogDescription>
-              Mã ca: {selectedRecord?.MaCa}
+              Mã dịch: {selectedRecord?.MaDich}
             </DialogDescription>
           </DialogHeader>
           {selectedRecord && (
@@ -935,6 +987,8 @@ export default function DichBenhPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </>
+      )}
     </div>
   );
 }

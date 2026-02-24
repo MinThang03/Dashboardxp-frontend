@@ -73,9 +73,13 @@ export const hoSoApi = {
 
 // ============== VĂN BẢN ==============
 export const vanBanApi = {
-  getList: (params?: { page?: number; limit?: number }) => {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
     const query = new URLSearchParams(params as any).toString();
     return apiCall(`/van-ban?${query}`);
+  },
+
+  getStats: () => {
+    return apiCall('/van-ban/stats');
   },
 
   getById: (maVanBan: number) => {
@@ -83,13 +87,18 @@ export const vanBanApi = {
   },
 
   create: (data: {
-    SoVanBan: string;
-    TenVanBan: string;
+    SoKyHieu: string;
+    TrichYeu: string;
     LoaiVanBan: string;
-    NgayBanHanh: string;
-    NgayCoHieuLuc: string;
+    LoaiVB?: string;
+    CoQuanBanHanh?: string;
+    NgayBanHanh?: string;
+    NgayDen?: string;
+    MaLinhVuc?: number;
+    NguoiXuLy?: number;
     TrangThai?: string;
     FileDinhKem?: string;
+    GhiChu?: string;
   }) => {
     return apiCall('/van-ban', {
       method: 'POST',
@@ -296,7 +305,7 @@ export const luotKhamApi = {
 
 // ============== GIÁO DỤC ==============
 export const coSoGiaoDucApi = {
-  getList: (params?: { page?: number; limit?: number }) => {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
     const query = new URLSearchParams(params as any).toString();
     return apiCall(`/co-so-giao-duc?${query}`);
   },
@@ -468,6 +477,18 @@ export const hoNgheoApi = {
 };
 
 // ============== TÀI CHÍNH ==============
+export const nganSachApi = {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
+    const query = new URLSearchParams(params as any).toString();
+    return apiCall(`/ngan-sach?${query}`);
+  },
+  getStats: () => apiCall('/ngan-sach/stats'),
+  getById: (id: number) => apiCall(`/ngan-sach/${id}`),
+  create: (data: any) => apiCall('/ngan-sach', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: any) => apiCall(`/ngan-sach/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) => apiCall(`/ngan-sach/${id}`, { method: 'DELETE' }),
+};
+
 export const duToanNganSachApi = {
   getList: (params?: { page?: number; limit?: number }) => {
     const query = new URLSearchParams(params as any).toString();
@@ -542,6 +563,30 @@ export const bienDongDatApi = {
 };
 
 // ============== MÔI TRƯỜNG ==============
+export const racThaiApi = {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
+    const query = new URLSearchParams(params as any).toString();
+    return apiCall(`/rac-thai?${query}`);
+  },
+  getStats: () => apiCall('/rac-thai/stats'),
+  getById: (id: number) => apiCall(`/rac-thai/${id}`),
+  create: (data: any) => apiCall('/rac-thai', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: any) => apiCall(`/rac-thai/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) => apiCall(`/rac-thai/${id}`, { method: 'DELETE' }),
+};
+
+export const baoCaoONhiemApi = {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
+    const query = new URLSearchParams(params as any).toString();
+    return apiCall(`/bao-cao-o-nhiem?${query}`);
+  },
+  getStats: () => apiCall('/bao-cao-o-nhiem/stats'),
+  getById: (id: number) => apiCall(`/bao-cao-o-nhiem/${id}`),
+  create: (data: any) => apiCall('/bao-cao-o-nhiem', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: any) => apiCall(`/bao-cao-o-nhiem/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) => apiCall(`/bao-cao-o-nhiem/${id}`, { method: 'DELETE' }),
+};
+
 export const tramQuanTracMTApi = {
   getList: (params?: { page?: number; limit?: number }) => {
     const query = new URLSearchParams(params as any).toString();
@@ -603,6 +648,31 @@ export const leHoiApi = {
   delete: (id: number) => apiCall(`/le-hoi/${id}`, { method: 'DELETE' }),
 };
 
+// ============== AN NINH - TRẬT TỰ ==============
+export const viPhamApi = {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
+    const query = new URLSearchParams(params as any).toString();
+    return apiCall(`/vi-pham?${query}`);
+  },
+  getStats: () => apiCall('/vi-pham/stats'),
+  getById: (id: number) => apiCall(`/vi-pham/${id}`),
+  create: (data: any) => apiCall('/vi-pham', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: any) => apiCall(`/vi-pham/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) => apiCall(`/vi-pham/${id}`, { method: 'DELETE' }),
+};
+
+export const diemNongAnNinhApi = {
+  getList: (params?: { page?: number; limit?: number; search?: string }) => {
+    const query = new URLSearchParams(params as any).toString();
+    return apiCall(`/diem-nong-an-ninh?${query}`);
+  },
+  getStats: () => apiCall('/diem-nong-an-ninh/stats'),
+  getById: (id: number) => apiCall(`/diem-nong-an-ninh/${id}`),
+  create: (data: any) => apiCall('/diem-nong-an-ninh', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: number, data: any) => apiCall(`/diem-nong-an-ninh/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: number) => apiCall(`/diem-nong-an-ninh/${id}`, { method: 'DELETE' }),
+};
+
 export const langNgheApi = {
   getList: (params?: { page?: number; limit?: number }) => {
     const query = new URLSearchParams(params as any).toString();
@@ -635,7 +705,6 @@ export const api = {
   phanAnh: phanAnhApi,
   taiLieu: taiLieuApi,
   health: healthCheck,
-  // New APIs
   hoTich: hoTichApi,
   tramYTe: tramYTeApi,
   nhanVienYTe: nhanVienYTeApi,
@@ -655,12 +724,15 @@ export const api = {
   bienDongDanCu: bienDongDanCuApi,
   viecLam: viecLamApi,
   hoNgheo: hoNgheoApi,
+  nganSach: nganSachApi,
   duToanNganSach: duToanNganSachApi,
   giaiNgan: giaiNganApi,
   taiSanCong: taiSanCongApi,
   quyHoach: quyHoachApi,
   thuaDat: thuaDatApi,
   bienDongDat: bienDongDatApi,
+  racThai: racThaiApi,
+  baoCaoONhiem: baoCaoONhiemApi,
   tramQuanTracMT: tramQuanTracMTApi,
   diemThuGomRac: diemThuGomRacApi,
   diemNongMoiTruong: diemNongMoiTruongApi,
@@ -668,6 +740,9 @@ export const api = {
   leHoi: leHoiApi,
   langNghe: langNgheApi,
   sanPhamOCOP: sanPhamOCOPApi,
+  viPham: viPhamApi,
+  diemNongAnNinh: diemNongAnNinhApi,
 };
 
 export default api;
+

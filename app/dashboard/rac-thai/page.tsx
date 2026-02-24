@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { racThaiApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -137,24 +138,50 @@ export default function RacThaiPage() {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [data, setData] = useState<DiemThuGom[]>([]);
+  const [stats, setStats] = useState({ tongDiem: 0, daThu: 0, choThu: 0, tongKhoiLuong: 0, tyLePhanLoaiTB: 0 });
+  const [loading, setLoading] = useState(true);
 
-  const filteredData = mockDiemThuGom.filter((item) => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [listRes, statsRes] = await Promise.all([
+        racThaiApi.getList({ page: 1, limit: 100 }),
+        racThaiApi.getStats()
+      ]);
+      if (listRes.success && listRes.data) {
+        setData(listRes.data as any);
+      }
+      if (statsRes.success && statsRes.data) {
+        const statsData = statsRes.data as any;
+        setStats({
+          tongDiem: statsData.total || 0,
+          daThu: statsData.binhThuong || 0,
+          choThu: (statsData.total || 0) - (statsData.binhThuong || 0),
+          tongKhoiLuong: statsData.totalKhoiLuong || 0,
+          tyLePhanLoaiTB: 0
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredData = data.filter((item) => {
     const matchesSearch =
-      item.MaDiem.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.TenDiem.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.KhuVuc.toLowerCase().includes(searchQuery.toLowerCase());
+      String(item.MaDiem).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.TenDiem?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.KhuVuc?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLoai = filterLoai === 'all' || item.LoaiRac === filterLoai;
     const matchesStatus = filterStatus === 'all' || item.TrangThaiHomNay === filterStatus;
     return matchesSearch && matchesLoai && matchesStatus;
   });
-
-  const stats = {
-    tongDiem: mockDiemThuGom.length,
-    daThu: mockDiemThuGom.filter(r => r.TrangThaiHomNay === 'Đã thu').length,
-    choThu: mockDiemThuGom.filter(r => r.TrangThaiHomNay.includes('Chờ')).length,
-    tongKhoiLuong: mockDiemThuGom.reduce((acc, item) => acc + item.KhoiLuongNgay, 0),
-    tyLePhanLoaiTB: Math.round(mockDiemThuGom.reduce((acc, item) => acc + item.TyLePhanLoai, 0) / mockDiemThuGom.length)
-  };
 
   const getTrangThaiBadge = (trangThai: string) => {
     switch (trangThai) {

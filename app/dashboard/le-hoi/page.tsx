@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { leHoiApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -174,7 +175,7 @@ const trangThaiColors = {
 };
 
 export default function LeHoiPage() {
-  const [leHoiList, setLeHoiList] = useState<LeHoi[]>(mockLeHoi);
+  const [leHoiList, setLeHoiList] = useState<LeHoi[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTrangThai, setSelectedTrangThai] = useState<string>('all');
   const [viewDialog, setViewDialog] = useState(false);
@@ -182,12 +183,38 @@ export default function LeHoiPage() {
   const [addDialog, setAddDialog] = useState(false);
   const [selectedLeHoi, setSelectedLeHoi] = useState<LeHoi | null>(null);
   const [formData, setFormData] = useState<Partial<LeHoi>>({});
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ total: 0, daToChuc: 0, sapToChuc: 0, totalKhach: 0 });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [listRes, statsRes] = await Promise.all([
+        leHoiApi.getList({ page: 1, limit: 100 }),
+        leHoiApi.getStats()
+      ]);
+      if (listRes.success && listRes.data) {
+        setLeHoiList(listRes.data as any);
+      }
+      if (statsRes.success && statsRes.data) {
+        setStats(statsRes.data as any);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Thống kê
-  const tongLeHoi = leHoiList.length;
-  const sapDienRa = leHoiList.filter(lh => lh.TrangThai === 'Sắp diễn ra').length;
-  const tongNguoiThamGia = leHoiList.reduce((sum, lh) => sum + lh.QuyMo, 0);
-  const tongKinhPhi = leHoiList.reduce((sum, lh) => sum + lh.KinhPhi, 0);
+  const tongLeHoi = stats.total;
+  const sapDienRa = stats.sapToChuc;
+  const tongNguoiThamGia = stats.totalKhach;
+  const tongKinhPhi = leHoiList.reduce((sum, lh) => sum + (lh.KinhPhi || 0), 0);
 
   // Dữ liệu biểu đồ quy mô
   const chartData = leHoiList.slice(0, 6).map(lh => ({

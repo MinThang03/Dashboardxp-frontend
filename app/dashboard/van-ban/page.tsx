@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { mockVanBan, formatDate, formatDateTime } from '@/lib/mock-data';
+import { vanBanApi } from '@/lib/api';
+import { formatDate, formatDateTime } from '@/lib/mock-data';
 import {
   FileText,
   Download,
@@ -41,13 +42,49 @@ export default function VanBanPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [formData, setFormData] = useState<any>({});
+  
+  // API data states
+  const [data, setData] = useState<any[]>([]);
+  const [stats, setStats] = useState({ total: 0, moi: 0, dangXuLy: 0, daXuLy: 0 });
+  const [loading, setLoading] = useState(true);
 
-  const filteredData = mockVanBan.filter((item) => {
+  // Fetch data from API
+  useEffect(() => {
+    fetchData();
+    fetchStats();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await vanBanApi.getList({ page: 1, limit: 1000 });
+      if (response.success && response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching van ban:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await vanBanApi.getStats();
+      if (response.success && response.data) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const filteredData = data.filter((item) => {
     const search = searchQuery.toLowerCase();
     const matchesSearch =
-      item.SoKyHieu.toLowerCase().includes(search) ||
-      item.TrichYeu.toLowerCase().includes(search) ||
-      item.CoQuanBanHanh.toLowerCase().includes(search);
+      item.SoKyHieu?.toLowerCase().includes(search) ||
+      item.TrichYeu?.toLowerCase().includes(search) ||
+      item.CoQuanBanHanh?.toLowerCase().includes(search);
     const matchesLoai = filterLoai === 'all' || item.LoaiVanBan === filterLoai;
     const matchesTrangThai = filterTrangThai === 'all' || item.TrangThai === filterTrangThai;
     return matchesSearch && matchesLoai && matchesTrangThai;
@@ -68,8 +105,8 @@ export default function VanBanPage() {
     setFormData({
       SoKyHieu: '',
       TrichYeu: '',
-      LoaiVanBan: 'Đến',
-      LoaiVB: 'Công văn',
+      LoaiVanBan: '',
+      LoaiVB: '',
       CoQuanBanHanh: '',
       NgayBanHanh: new Date().toISOString().split('T')[0],
       NgayDen: new Date().toISOString().split('T')[0],
@@ -82,24 +119,50 @@ export default function VanBanPage() {
     setIsAddOpen(true);
   };
 
-  const handleSave = () => {
-    console.log('Saving:', formData);
-    setIsEditOpen(false);
-    setIsAddOpen(false);
-  };
-
-  const handleDelete = (item: any) => {
-    if (confirm(`Bạn có chắc chắn muốn xóa văn bản ${item.SoKyHieu}?`)) {
-      console.log('Deleting:', item);
+  const handleSave = async () => {
+    try {
+      let response;
+      if (isEditOpen && selectedItem) {
+        response = await vanBanApi.update(selectedItem.MaVanBan, formData);
+      } else if (isAddOpen) {
+        response = await vanBanApi.create(formData);
+      }
+      
+      if (response?.success) {
+        await fetchData();
+        await fetchStats();
+        setIsEditOpen(false);
+        setIsAddOpen(false);
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
     }
   };
 
-  const stats = {
-    den: mockVanBan.filter(v => v.LoaiVanBan === 'Đến').length,
-    di: mockVanBan.filter(v => v.LoaiVanBan === 'Đi').length,
-    dangXuLy: mockVanBan.filter(v => v.TrangThai === 'Đang xử lý').length,
-    hoanThanh: mockVanBan.filter(v => v.TrangThai === 'Hoàn thành').length,
+  const handleDelete = async (item: any) => {
+    if (confirm(`Bạn có chắc chắn muốn xóa văn bản ${item.SoKyHieu}?`)) {
+      try {
+        const response = await vanBanApi.delete(item.MaVanBan);
+        if (response?.success) {
+          await fetchData();
+          await fetchStats();
+        }
+      } catch (error) {
+        console.error('Error deleting:', error);
+      }
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    );
+  }
 
 
   return (
@@ -130,32 +193,32 @@ export default function VanBanPage() {
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
+            <div className="p-2 sm:p-3 bg-primary/10 rounded-xl">
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            </div>
+            <Badge className="bg-primary/10 text-primary border-0 text-xs sm:text-sm">Tổng</Badge>
+          </div>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.total}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Tổng số VB</p>
+        </Card>
+
+        <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
+          <div className="flex items-center justify-between mb-2">
             <div className="p-2 sm:p-3 bg-status-danger/10 rounded-xl">
               <TrendingDown className="w-5 h-5 sm:w-6 sm:h-6 text-status-danger" />
             </div>
-            <Badge className="bg-status-danger/10 text-status-danger border-0 text-xs sm:text-sm">Đến</Badge>
+            <Badge className="bg-status-danger/10 text-status-danger border-0 text-xs sm:text-sm">Mới</Badge>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold">{stats.den}</p>
-          <p className="text-xs sm:text-sm text-muted-foreground">VB đến</p>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.moi}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">VB mới</p>
         </Card>
 
         <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
-            <div className="p-2 sm:p-3 bg-status-success/10 rounded-xl">
-              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-status-success" />
+            <div className="p-2 sm:p-3 bg-status-warning/10 rounded-xl">
+              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-status-warning" />
             </div>
-            <Badge className="bg-status-success/10 text-status-success border-0 text-xs sm:text-sm">Đi</Badge>
-          </div>
-          <p className="text-2xl sm:text-3xl font-bold">{stats.di}</p>
-          <p className="text-xs sm:text-sm text-muted-foreground">VB đi</p>
-        </Card>
-
-        <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 sm:p-3 bg-primary/10 rounded-xl">
-              <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-            </div>
-            <Badge className="bg-primary/10 text-primary border-0 text-xs sm:text-sm">Đang xử lý</Badge>
+            <Badge className="bg-status-warning/10 text-status-warning border-0 text-xs sm:text-sm">Đang xử lý</Badge>
           </div>
           <p className="text-2xl sm:text-3xl font-bold">{stats.dangXuLy}</p>
           <p className="text-xs sm:text-sm text-muted-foreground">Đang xử lý</p>
@@ -163,13 +226,13 @@ export default function VanBanPage() {
 
         <Card className="p-4 sm:p-6 border-0 shadow-lg hover-lift">
           <div className="flex items-center justify-between mb-2">
-            <div className="p-2 sm:p-3 bg-secondary/10 rounded-xl">
-              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
+            <div className="p-2 sm:p-3 bg-status-success/10 rounded-xl">
+              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-status-success" />
             </div>
-            <Badge className="bg-secondary/10 text-secondary border-0 text-xs sm:text-sm">Hoàn thành</Badge>
+            <Badge className="bg-status-success/10 text-status-success border-0 text-xs sm:text-sm">Đã xử lý</Badge>
           </div>
-          <p className="text-2xl sm:text-3xl font-bold">{stats.hoanThanh}</p>
-          <p className="text-xs sm:text-sm text-muted-foreground">Hoàn thành</p>
+          <p className="text-2xl sm:text-3xl font-bold">{stats.daXuLy}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">Đã xử lý</p>
         </Card>
       </div>
 

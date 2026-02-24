@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { bienDongDatApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -189,10 +190,80 @@ export default function BienDongDatPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterLoaiBD, setFilterLoaiBD] = useState<string>('all');
+  const [data, setData] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({});
+  const [loading, setLoading] = useState(true);
   const [selectedBienDong, setSelectedBienDong] = useState<BienDongDat | null>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+
+  // Fetch data
+  useEffect(() => {
+    fetchData();
+    fetchStats();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await bienDongDatApi.getList();
+      if (response.success && response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await bienDongDatApi.getStats();
+      if (response.success && response.data) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      if (isEditOpen && selectedBienDong) {
+        const response = await bienDongDatApi.update(selectedBienDong.MaBienDong, {});
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setIsEditOpen(false);
+        }
+      } else if (isAddOpen) {
+        const response = await bienDongDatApi.create({});
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setIsAddOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm('Bạn có chắc muốn xóa bản ghi này?')) {
+      try {
+        const response = await bienDongDatApi.delete(id);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+        }
+      } catch (error) {
+        console.error('Error deleting:', error);
+      }
+    }
+  };
 
   const handleViewDialogChange = (open: boolean) => {
     setIsViewOpen(open);
@@ -204,12 +275,11 @@ export default function BienDongDatPage() {
     if (!open) setSelectedBienDong(null);
   };
 
-  const filteredData = mockBienDong.filter((item) => {
+  const filteredData = data.filter((item) => {
     const matchesSearch =
-      item.MaBienDong.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.ChuSoHuuCu.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.ChuSoHuuMoi.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.MaThua.includes(searchQuery);
+      (item.MaBienDong || '').toString().includes(searchQuery) ||
+      (item.MaThua || '').toString().includes(searchQuery) ||
+      (item.NguoiThucHien || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = filterStatus === 'all' || item.TrangThai === filterStatus;
     const matchesLoaiBD = filterLoaiBD === 'all' || item.LoaiBienDong === filterLoaiBD;
     return matchesSearch && matchesStatus && matchesLoaiBD;

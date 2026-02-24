@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { mockHoTich, mockThanhVienHoTich, formatDate, formatDateTime } from '@/lib/mock-data';
+import { formatDate, formatDateTime } from '@/lib/mock-data';
+import { hoTichApi } from '@/lib/api';
 import {
   FileText,
   Search,
@@ -28,10 +29,14 @@ import {
   Trash2,
   Users,
   Home,
+  Loader2,
 } from 'lucide-react';
 
 
 export default function HoTichPage() {
+  const [data, setData] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>({});
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -39,12 +44,43 @@ export default function HoTichPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [formData, setFormData] = useState<any>({});
 
-  const filteredData = mockHoTich.filter((item) => {
+  // Fetch data from API
+  useEffect(() => {
+    fetchData();
+    fetchStats();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await hoTichApi.getList({ limit: 1000 });
+      if (response.success && response.data) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await hoTichApi.getStats();
+      if (response.success && response.data) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const filteredData = data.filter((item) => {
     const search = searchQuery.toLowerCase();
     return (
-      item.so_ho_tich.toLowerCase().includes(search) ||
-      item.ten_chu_ho.toLowerCase().includes(search) ||
-      item.dia_chi_ho_tich.toLowerCase().includes(search)
+      item.so_ho_tich?.toLowerCase().includes(search) ||
+      item.ten_chu_ho?.toLowerCase().includes(search) ||
+      item.dia_chi_ho_tich?.toLowerCase().includes(search)
     );
   });
 
@@ -69,27 +105,54 @@ export default function HoTichPage() {
       so_thanh_vien_ho_tich: 1,
       ngay_lap_ho_tich: new Date().toISOString().split('T')[0],
       ghi_chu: '',
-      trang_thai: 1,
+      trang_thai: true,
     });
     setIsAddOpen(true);
   };
 
-  const handleSave = () => {
-    console.log('Saving:', formData);
-    // TODO: API call to save
-    setIsEditOpen(false);
-    setIsAddOpen(false);
+  const handleSave = async () => {
+    try {
+      if (isEditOpen && selectedItem) {
+        // Update
+        const response = await hoTichApi.update(selectedItem.id, formData);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setIsEditOpen(false);
+        }
+      } else {
+        // Create
+        const response = await hoTichApi.create(formData);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+          setIsAddOpen(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
+      alert('Có lỗi xảy ra khi lưu dữ liệu');
+    }
   };
 
-  const handleDelete = (item: any) => {
+  const handleDelete = async (item: any) => {
     if (confirm(`Bạn có chắc chắn muốn xóa hộ tịch ${item.so_ho_tich}?`)) {
-      console.log('Deleting:', item);
-      // TODO: API call to delete
+      try {
+        const response = await hoTichApi.delete(item.id);
+        if (response.success) {
+          await fetchData();
+          await fetchStats();
+        }
+      } catch (error) {
+        console.error('Error deleting:', error);
+        alert('Có lỗi xảy ra khi xóa dữ liệu');
+      }
     }
   };
 
   const getThanhVien = (idHoTich: number) => {
-    return mockThanhVienHoTich.filter((tv) => tv.id_ho_tich === idHoTich);
+    // This would need a separate API call or join in the backend
+    return [];
   };
 
 
@@ -118,55 +181,57 @@ export default function HoTichPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-blue-500/10 rounded-xl">
-              <FileText className="w-6 h-6 text-blue-600" />
-            </div>
-            <Badge className="bg-blue-500/10 text-blue-700 border-0">Tổng</Badge>
-          </div>
-          <p className="text-3xl font-bold">{mockHoTich.length}</p>
-          <p className="text-sm text-muted-foreground">Tổng số hộ</p>
-        </Card>
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="p-6 border-0 shadow-lg hover-lift">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-3 bg-blue-500/10 rounded-xl">
+                  <FileText className="w-6 h-6 text-blue-600" />
+                </div>
+                <Badge className="bg-blue-500/10 text-blue-700 border-0">Tổng</Badge>
+              </div>
+              <p className="text-3xl font-bold">{stats.total || 0}</p>
+              <p className="text-sm text-muted-foreground">Tổng số hộ</p>
+            </Card>
 
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-green-500/10 rounded-xl">
-              <Users className="w-6 h-6 text-green-600" />
-            </div>
-            <Badge className="bg-green-500/10 text-green-700 border-0">Thành viên</Badge>
-          </div>
-          <p className="text-3xl font-bold">{mockThanhVienHoTich.length}</p>
-          <p className="text-sm text-muted-foreground">Tổng thành viên</p>
-        </Card>
+            <Card className="p-6 border-0 shadow-lg hover-lift">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-3 bg-green-500/10 rounded-xl">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+                <Badge className="bg-green-500/10 text-green-700 border-0">Thành viên</Badge>
+              </div>
+              <p className="text-3xl font-bold">{stats.tongThanhVien || 0}</p>
+              <p className="text-sm text-muted-foreground">Tổng thành viên</p>
+            </Card>
 
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-purple-500/10 rounded-xl">
-              <Home className="w-6 h-6 text-purple-600" />
-            </div>
-            <Badge className="bg-purple-500/10 text-purple-700 border-0">Hoạt động</Badge>
-          </div>
-          <p className="text-3xl font-bold">{mockHoTich.filter(h => h.trang_thai === 1).length}</p>
-          <p className="text-sm text-muted-foreground">Hộ đang hoạt động</p>
-        </Card>
+            <Card className="p-6 border-0 shadow-lg hover-lift">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-3 bg-purple-500/10 rounded-xl">
+                  <Home className="w-6 h-6 text-purple-600" />
+                </div>
+                <Badge className="bg-purple-500/10 text-purple-700 border-0">Hoạt động</Badge>
+              </div>
+              <p className="text-3xl font-bold">{stats.hoatDong || 0}</p>
+              <p className="text-sm text-muted-foreground">Hộ đang hoạt động</p>
+            </Card>
 
-        <Card className="p-6 border-0 shadow-lg hover-lift">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-3 bg-amber-500/10 rounded-xl">
-              <Calendar className="w-6 h-6 text-amber-600" />
-            </div>
-            <Badge className="bg-amber-500/10 text-amber-700 border-0">Mới</Badge>
+            <Card className="p-6 border-0 shadow-lg hover-lift">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-3 bg-amber-500/10 rounded-xl">
+                  <Calendar className="w-6 h-6 text-amber-600" />
+                </div>
+                <Badge className="bg-amber-500/10 text-amber-700 border-0">Không hoạt động</Badge>
+              </div>
+              <p className="text-3xl font-bold">{stats.khongHoatDong || 0}</p>
+              <p className="text-sm text-muted-foreground">Hộ không hoạt động</p>
+            </Card>
           </div>
-          <p className="text-3xl font-bold">
-            {mockHoTich.filter(h => 
-              new Date(h.created_at).getMonth() === new Date().getMonth()
-            ).length}
-          </p>
-          <p className="text-sm text-muted-foreground">Hộ tháng này</p>
-        </Card>
-      </div>
 
       {/* Search & Filter */}
       <Card className="p-4 border-0 shadow-lg">
@@ -206,72 +271,88 @@ export default function HoTichPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((item) => (
-                <tr key={item.id} className="border-b hover:bg-slate-50 transition-colors">
-                  <td className="p-4">
-                    <span className="font-semibold text-primary">{item.so_ho_tich}</span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-muted-foreground" />
-                      <span>{item.ten_chu_ho}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm text-muted-foreground">
-                    {formatDate(item.ngay_sinh_chu_ho)}
-                  </td>
-                  <td className="p-4">
-                    <Badge variant="outline">{item.gioi_tinh_chu_ho}</Badge>
-                  </td>
-                  <td className="p-4 text-sm max-w-xs truncate">{item.dia_chi_ho_tich}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium">{item.so_thanh_vien_ho_tich}</span>
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm text-muted-foreground">
-                    {formatDate(item.ngay_lap_ho_tich)}
-                  </td>
-                  <td className="p-4">
-                    <Badge className={item.trang_thai === 1 ? 'bg-green-500/10 text-green-700 border-0' : 'bg-red-500/10 text-red-700 border-0'}>
-                      {item.trang_thai === 1 ? 'Hoạt động' : 'Không hoạt động'}
-                    </Badge>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => handleView(item)}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        onClick={() => handleEdit(item)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
-                        onClick={() => handleDelete(item)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-12">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
                   </td>
                 </tr>
-              ))}
+              ) : filteredData.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-12 text-muted-foreground">
+                    Không có dữ liệu
+                  </td>
+                </tr>
+              ) : (
+                filteredData.map((item) => (
+                  <tr key={item.id} className="border-b hover:bg-slate-50 transition-colors">
+                    <td className="p-4">
+                      <span className="font-semibold text-primary">{item.so_ho_tich}</span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <span>{item.ten_chu_ho}</span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm text-muted-foreground">
+                      {item.ngay_sinh_chu_ho ? formatDate(item.ngay_sinh_chu_ho) : '-'}
+                    </td>
+                    <td className="p-4">
+                      <Badge variant="outline">{item.gioi_tinh_chu_ho || '-'}</Badge>
+                    </td>
+                    <td className="p-4 text-sm max-w-xs truncate">{item.dia_chi_ho_tich}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-1">
+                        <Users className="w-4 h-4 text-muted-foreground" />
+                        <span className="font-medium">{item.so_thanh_vien_ho_tich || 0}</span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm text-muted-foreground">
+                      {item.ngay_lap_ho_tich ? formatDate(item.ngay_lap_ho_tich) : '-'}
+                    </td>
+                    <td className="p-4">
+                      <Badge className={item.trang_thai ? 'bg-green-500/10 text-green-700 border-0' : 'bg-red-500/10 text-red-700 border-0'}>
+                        {item.trang_thai ? 'Hoạt động' : 'Không hoạt động'}
+                      </Badge>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleView(item)}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleEdit(item)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
+                          onClick={() => handleDelete(item)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
       </Card>
+        </>
+      )}
 
       {/* View Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
@@ -299,11 +380,11 @@ export default function HoTichPage() {
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Ngày sinh</Label>
-                    <p className="font-medium">{formatDate(selectedItem.ngay_sinh_chu_ho)}</p>
+                    <p className="font-medium">{selectedItem.ngay_sinh_chu_ho ? formatDate(selectedItem.ngay_sinh_chu_ho) : '-'}</p>
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Giới tính</Label>
-                    <p className="font-medium">{selectedItem.gioi_tinh_chu_ho}</p>
+                    <p className="font-medium">{selectedItem.gioi_tinh_chu_ho || '-'}</p>
                   </div>
                   <div className="col-span-2">
                     <Label className="text-muted-foreground">Địa chỉ hộ tịch</Label>
@@ -311,11 +392,11 @@ export default function HoTichPage() {
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Số thành viên</Label>
-                    <p className="font-medium">{selectedItem.so_thanh_vien_ho_tich}</p>
+                    <p className="font-medium">{selectedItem.so_thanh_vien_ho_tich || 0}</p>
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Ngày lập hộ tịch</Label>
-                    <p className="font-medium">{formatDate(selectedItem.ngay_lap_ho_tich)}</p>
+                    <p className="font-medium">{selectedItem.ngay_lap_ho_tich ? formatDate(selectedItem.ngay_lap_ho_tich) : '-'}</p>
                   </div>
                   {selectedItem.ghi_chu && (
                     <div className="col-span-2">
@@ -325,52 +406,29 @@ export default function HoTichPage() {
                   )}
                   <div>
                     <Label className="text-muted-foreground">Trạng thái</Label>
-                    <Badge className={selectedItem.trang_thai === 1 ? 'bg-green-500/10 text-green-700' : 'bg-red-500/10 text-red-700'}>
-                      {selectedItem.trang_thai === 1 ? 'Hoạt động' : 'Không hoạt động'}
+                    <Badge className={selectedItem.trang_thai ? 'bg-green-500/10 text-green-700' : 'bg-red-500/10 text-red-700'}>
+                      {selectedItem.trang_thai ? 'Hoạt động' : 'Không hoạt động'}
                     </Badge>
                   </div>
                   <div>
                     <Label className="text-muted-foreground">Ngày tạo</Label>
-                    <p className="font-medium text-sm">{formatDateTime(selectedItem.created_at)}</p>
+                    <p className="font-medium text-sm">{selectedItem.created_at ? formatDateTime(selectedItem.created_at) : '-'}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Danh sách thành viên */}
+              {/* Danh sách thành viên - TODO: Implement API */}
+              {/*
               <div>
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Danh sách thành viên ({getThanhVien(selectedItem.id).length})
+                  Danh sách thành viên
                 </h3>
-                <div className="space-y-3">
-                  {getThanhVien(selectedItem.id).map((tv) => (
-                    <div key={tv.id} className="border rounded-lg p-4 hover:bg-slate-50">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label className="text-xs text-muted-foreground">Họ tên</Label>
-                          <p className="font-medium">{tv.ho_ten}</p>
-                        </div>
-                        <div>
-                          <Label className="text-xs text-muted-foreground">Số CCCD</Label>
-                          <p className="font-medium">{tv.so_cccd}</p>
-                        </div>
-                        <div>
-                          <Label className="text-xs text-muted-foreground">Ngày sinh</Label>
-                          <p>{formatDate(tv.ngay_sinh)}</p>
-                        </div>
-                        <div>
-                          <Label className="text-xs text-muted-foreground">Giới tính</Label>
-                          <p>{tv.gioi_tinh}</p>
-                        </div>
-                        <div className="col-span-2">
-                          <Label className="text-xs text-muted-foreground">Quan hệ với chủ hộ</Label>
-                          <Badge variant="outline">{tv.quan_he_voi_chu_ho}</Badge>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="text-center py-8 text-muted-foreground">
+                  Tính năng đang được phát triển
                 </div>
               </div>
+              */}
             </div>
           )}
           <DialogFooter>
@@ -478,12 +536,12 @@ export default function HoTichPage() {
                 <Label htmlFor="trang_thai">Trạng thái</Label>
                 <select
                   id="trang_thai"
-                  value={formData.trang_thai || 1}
-                  onChange={(e) => setFormData({ ...formData, trang_thai: parseInt(e.target.value) })}
+                  value={formData.trang_thai ? '1' : '0'}
+                  onChange={(e) => setFormData({ ...formData, trang_thai: e.target.value === '1' })}
                   className="w-full h-10 px-3 border border-input rounded-md"
                 >
-                  <option value={1}>Hoạt động</option>
-                  <option value={0}>Không hoạt động</option>
+                  <option value="1">Hoạt động</option>
+                  <option value="0">Không hoạt động</option>
                 </select>
               </div>
             </div>

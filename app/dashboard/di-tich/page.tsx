@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { diTichApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -171,7 +172,7 @@ const tinhTrangColors = {
 };
 
 export default function DiTichPage() {
-  const [diTichList, setDiTichList] = useState<DiTich[]>(mockDiTich);
+  const [diTichList, setDiTichList] = useState<DiTich[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCapDo, setSelectedCapDo] = useState<string>('all');
   const [selectedTinhTrang, setSelectedTinhTrang] = useState<string>('all');
@@ -180,13 +181,39 @@ export default function DiTichPage() {
   const [addDialog, setAddDialog] = useState(false);
   const [selectedDiTich, setSelectedDiTich] = useState<DiTich | null>(null);
   const [formData, setFormData] = useState<Partial<DiTich>>({});
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ total: 0, tot: 0, capQuocGia: 0, capTinh: 0 });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [listRes, statsRes] = await Promise.all([
+        diTichApi.getList({ page: 1, limit: 100 }),
+        diTichApi.getStats()
+      ]);
+      if (listRes.success && listRes.data) {
+        setDiTichList(listRes.data as any);
+      }
+      if (statsRes.success && statsRes.data) {
+        setStats(statsRes.data as any);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Thống kê
-  const tongDiTich = diTichList.length;
-  const capQuocGia = diTichList.filter(dt => dt.CapDo === 'Quốc gia').length;
-  const capTinh = diTichList.filter(dt => dt.CapDo === 'Tỉnh').length;
+  const tongDiTich = stats.total;
+  const capQuocGia = stats.capQuocGia;
+  const capTinh = stats.capTinh;
   const xuongCap = diTichList.filter(dt => dt.TinhTrang === 'Xuống cấp' || dt.TinhTrang === 'Nguy cấp').length;
-  const tongKhach = diTichList.reduce((sum, dt) => sum + dt.LuotKhachThang, 0);
+  const tongKhach = diTichList.reduce((sum, dt) => sum + (dt.LuotKhachThang || 0), 0);
 
   // Dữ liệu biểu đồ theo cấp độ
   const chartDataCapDo = [

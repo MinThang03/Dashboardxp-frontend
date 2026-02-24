@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { baoCaoONhiemApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -159,25 +160,51 @@ export default function BaoCaoONhiemPage() {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [data, setData] = useState<BaoCaoONhiem[]>([]);
+  const [stats, setStats] = useState({ tongBaoCao: 0, tiepNhan: 0, dangXuLy: 0, daXuLy: 0, nghiemTrong: 0 });
+  const [loading, setLoading] = useState(true);
 
-  const filteredData = mockBaoCaoONhiem.filter((item) => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [listRes, statsRes] = await Promise.all([
+        baoCaoONhiemApi.getList({ page: 1, limit: 100 }),
+        baoCaoONhiemApi.getStats()
+      ]);
+      if (listRes.success && listRes.data) {
+        setData(listRes.data as any);
+      }
+      if (statsRes.success && statsRes.data) {
+        const statsData = statsRes.data as any;
+        setStats({
+          tongBaoCao: statsData.total || 0,
+          tiepNhan: (statsData.total || 0) - (statsData.choXuLy || 0) - (statsData.daXuLy || 0),
+          dangXuLy: statsData.choXuLy || 0,
+          daXuLy: statsData.daXuLy || 0,
+          nghiemTrong: 0
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredData = data.filter((item) => {
     const matchesSearch =
-      item.MaBaoCao.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.DiaDiem.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.NguoiBaoCao.toLowerCase().includes(searchQuery.toLowerCase());
+      String(item.MaBaoCao).toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.DiaDiem?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.NguoiBaoCao?.toString().toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLoai = filterLoai === 'all' || item.LoaiONhiem === filterLoai;
     const matchesMucDo = filterMucDo === 'all' || item.MucDo === filterMucDo;
     const matchesStatus = filterStatus === 'all' || item.TrangThai === filterStatus;
     return matchesSearch && matchesLoai && matchesMucDo && matchesStatus;
   });
-
-  const stats = {
-    tongBaoCao: mockBaoCaoONhiem.length,
-    tiepNhan: mockBaoCaoONhiem.filter(r => r.TrangThai === 'Tiếp nhận').length,
-    dangXuLy: mockBaoCaoONhiem.filter(r => r.TrangThai === 'Đang xử lý').length,
-    daXuLy: mockBaoCaoONhiem.filter(r => r.TrangThai === 'Đã xử lý').length,
-    nghiemTrong: mockBaoCaoONhiem.filter(r => r.MucDo === 'Nghiêm trọng').length
-  };
 
   const getMucDoBadge = (mucDo: string) => {
     switch (mucDo) {
